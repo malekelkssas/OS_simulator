@@ -1,6 +1,9 @@
 package mutexes;
 
+import storage.Process;
+
 public interface Mutexable {
-    public int semWait();
-    public int semSignal();
+ 
+	public void semWait(Process process);
+    public void semSignal(Process process);
 }

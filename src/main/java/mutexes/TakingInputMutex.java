@@ -1,13 +1,23 @@
 package mutexes;
 
-public class TakingInputMutex implements Mutexable{
-    public int semWait() {
-        return 0;
-    }
+import java.util.LinkedList;
 
-    @Override
-    public int semSignal() {
-        return 0;
-    }
+public class TakingInputMutex extends MutexBase {
 
+	private static TakingInputMutex instance;
+
+	private TakingInputMutex() {
+
+		this.value = 0;
+		this.readyQueue = new LinkedList<>();
+		this.blockedQueue = new LinkedList<>();
+	}
+
+	public static TakingInputMutex getInstance() {
+
+		if (instance == null) {
+			instance = new TakingInputMutex();
+		}
+		return instance;
+	}
 }
