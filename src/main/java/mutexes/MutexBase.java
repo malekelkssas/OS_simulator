@@ -24,15 +24,17 @@ public abstract class MutexBase implements Mutexable {
 	@Override
 	public void semSignal(Process process) {
 
-		if (ownerID == process.getID()) {
-			if (blockedQueue.isEmpty())
-				value = 1;
-			else {
-				Process p = blockedQueue.remove();
-				readyQueue.add(p);
-				ownerID = p.getID();
-			}
+		if (ownerID != process.getID())
+			return;
+
+		if (blockedQueue.isEmpty())
+			value = 1;
+		else {
+			Process p = blockedQueue.remove();
+			readyQueue.add(p);
+			ownerID = p.getID();
 		}
+
 	}
 
 	private boolean isAvailable() {
