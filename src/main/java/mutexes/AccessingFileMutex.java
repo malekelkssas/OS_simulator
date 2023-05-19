@@ -1,13 +1,24 @@
 package mutexes;
 
-public class AccessingFileMutex implements Mutexable {
-    @Override
-    public int semWait() {
-        return 0;
-    }
+import java.util.LinkedList;
 
-    @Override
-    public int semSignal() {
-        return 0;
-    }
+public class AccessingFileMutex extends MutexBase {
+
+	private static AccessingFileMutex instance;
+
+	private AccessingFileMutex() {
+
+		this.value = 0;
+		this.readyQueue = new LinkedList<>();
+		this.blockedQueue = new LinkedList<>();
+	}
+
+	public static AccessingFileMutex getInstance() {
+
+		if (instance == null) {
+			instance = new AccessingFileMutex();
+		}
+		return instance;
+	}
+
 }

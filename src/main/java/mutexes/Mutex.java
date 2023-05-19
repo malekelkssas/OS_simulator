@@ -1,23 +1,42 @@
 package mutexes;
 
+import storage.Process;
+
 public class Mutex {
+	private Mutex instance;
 
-    public int semWait(Resource resource) {
-        Mutexable check = getSubclassInstance(resource);
-        return check.semWait();
-    }
+	private Mutex() {
 
-    public int semSignal(Resource resource) {
-        Mutexable check = getSubclassInstance(resource);
-        return check.semWait();
-    }
+		instance = new Mutex();
+	}
 
-    private Mutexable getSubclassInstance(Resource resource) {
-        if (resource.equals(Resource.file))
-            return new AccessingFileMutex();
-        else if (resource.equals(Resource.userInput))
-            return new TakingInputMutex();
-        else
-            return new OutputtingScreen();
-    }
+	public Mutex getInstance() {
+		if (instance == null) {
+			instance = new Mutex();
+		}
+		return instance;
+	}
+
+	public void semWait(Resource resource, Process process) {
+
+		Mutexable check = getSubclassInstance(resource);
+		check.semWait(process);
+	}
+
+	public void semSignal(Resource resource, Process process) {
+
+		Mutexable check = getSubclassInstance(resource);
+		check.semSignal(process);
+	}
+
+	private Mutexable getSubclassInstance(Resource resource) {
+
+		if (resource.equals(Resource.file))
+			return AccessingFileMutex.getInstance();
+		else if (resource.equals(Resource.userInput))
+			return TakingInputMutex.getInstance();
+		else
+			return OutputScreenMutex.getInstance();
+	}
+  
 }
