@@ -1,11 +1,10 @@
 package storage;
 
-public class PCB {
+public class PCB extends Storable{
 	private int processID;
 	private State state;
 	private int programCounter;
 	private MemoryBoundry memoryBoundry;
-	private StorageType type = StorageType.PCB;
   
   public PCB(int processID, State state, MemoryBoundry memoryBoundry, int memoryLocation){
         this.processID = processID;
@@ -26,6 +25,6 @@ public class PCB {
 	public State getState() {
 		return state;
 	}
-     }
+}
 
 
