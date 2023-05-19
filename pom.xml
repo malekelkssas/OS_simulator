@@ -112,8 +112,6 @@
 
 				<configuration>
 					<configLocation>checkstyle.xml</configLocation>
-					<suppressionsLocation>suppressions.xml</suppressionsLocation>
-					<excludes>src/main/java/sql/*</excludes>
 				</configuration>
 			</plugin>
 			<plugin>
