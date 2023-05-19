@@ -4,11 +4,11 @@ import java.util.LinkedList;
 
 public class TakingInputMutex extends MutexBase {
 
-	private static TakingInputMutex instance;
+	private static TakingInputMutex instance = null;
 
 	private TakingInputMutex() {
 
-		this.value = 0;
+		this.value = 1;
 		this.readyQueue = new LinkedList<>();
 		this.blockedQueue = new LinkedList<>();
 	}

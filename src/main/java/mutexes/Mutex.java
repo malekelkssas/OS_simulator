@@ -3,14 +3,13 @@ package mutexes;
 import storage.Process;
 
 public class Mutex {
-	private Mutex instance;
+	private static Mutex instance = null;
 
 	private Mutex() {
 
-		instance = new Mutex();
 	}
 
-	public Mutex getInstance() {
+	public static Mutex getInstance() {
 		if (instance == null) {
 			instance = new Mutex();
 		}
@@ -33,8 +32,9 @@ public class Mutex {
 
 		if (resource.equals(Resource.file))
 			return AccessingFileMutex.getInstance();
-		else if (resource.equals(Resource.userInput))
+		else if (resource.equals(Resource.userInput)) 
 			return TakingInputMutex.getInstance();
+		
 		else
 			return OutputScreenMutex.getInstance();
 	}

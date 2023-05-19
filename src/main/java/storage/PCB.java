@@ -25,6 +25,10 @@ public class PCB extends Storable{
 	public State getState() {
 		return state;
 	}
+	
+	public void setState(State s) {
+		this.state = s;
+	}
 }
 
 
