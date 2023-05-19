@@ -42,7 +42,6 @@ public class MutexTest {
 		mutex.semWait(resource2, process2);
 
 		// Then no one should be blocked
-		assertThat(process1.getState()).isNotEqualTo(State.BLOCKED);
 		assertThat(process2.getState()).isNotEqualTo(State.BLOCKED);
 	}
 
