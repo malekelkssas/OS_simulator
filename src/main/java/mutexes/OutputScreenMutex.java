@@ -4,11 +4,11 @@ import java.util.LinkedList;
 
 public class OutputScreenMutex extends MutexBase {
 
-	private static OutputScreenMutex instance;
+	private static OutputScreenMutex instance = null;
 
 	private OutputScreenMutex() {
 
-		this.value = 0;
+		this.value = 1;
 		this.readyQueue = new LinkedList<>();
 		this.blockedQueue = new LinkedList<>();
 	}

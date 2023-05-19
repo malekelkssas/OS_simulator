@@ -4,11 +4,11 @@ import java.util.LinkedList;
 
 public class AccessingFileMutex extends MutexBase {
 
-	private static AccessingFileMutex instance;
+	private static AccessingFileMutex instance = null;
 
 	private AccessingFileMutex() {
 
-		this.value = 0;
+		this.value = 1;
 		this.readyQueue = new LinkedList<>();
 		this.blockedQueue = new LinkedList<>();
 	}

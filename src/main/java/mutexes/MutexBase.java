@@ -2,6 +2,7 @@ package mutexes;
 
 import java.util.Queue;
 import storage.Process;
+import storage.State;
 
 public abstract class MutexBase implements Mutexable {
 
@@ -12,12 +13,12 @@ public abstract class MutexBase implements Mutexable {
 
 	@Override
 	public void semWait(Process process) {
-
 		if (isAvailable()) {
 			ownerID = process.getID();
 			value = 0;
 		} else {
 			blockedQueue.add(process);
+			process.setState(State.BLOCKED);
 		}
 	}
 
@@ -31,6 +32,7 @@ public abstract class MutexBase implements Mutexable {
 			value = 1;
 		else {
 			Process p = blockedQueue.remove();
+			p.setState(State.READY);
 			readyQueue.add(p);
 			ownerID = p.getID();
 		}
