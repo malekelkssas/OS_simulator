@@ -4,8 +4,7 @@ public class MemoryBoundry {
     int start;
     int end;
 
-    public MemoryBoundry(int start,int end)
-    {
+    public MemoryBoundry(int start, int end){
         this.start = start;
         this.end = end;
     }

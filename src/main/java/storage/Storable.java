@@ -1,6 +1,6 @@
 package storage;
 
-public interface Storable {
-    int MemoryLocation = -1;
-    StorageType type = null;
+public abstract class Storable {
+    int memoryLocation;
+    StorageType type;
 }

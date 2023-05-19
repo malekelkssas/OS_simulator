@@ -1,6 +1,6 @@
 package mutexes;
 
-public class TakingInputMutex implements Mutexable{
+public class TakingInputMutex implements Mutexable {
     public int semWait() {
         return 0;
     }
