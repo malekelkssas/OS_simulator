@@ -1,17 +1,17 @@
 package storage;
 
 public class Process {
-	private int id;
+	private PCB pcb;
 
 	public Process(int id) {
-		this.id = id;
+		this.pcb.setID(id);
 	}
 
 	public int getID() {
-		return id;
+		return this.pcb.getID();
 	}
 
 	public void setID(int id) {
-		this.id = id;
+		this.pcb.setID(id);
 	}
 }
