@@ -6,7 +6,15 @@ public class PCB {
 	private int programCounter;
 	private MemoryBoundry memoryBoundry;
 	private StorageType type = StorageType.PCB;
-
+  
+  public PCB(int processID, State state, MemoryBoundry memoryBoundry, int memoryLocation){
+        this.processID = processID;
+        this.state = state;
+        this.memoryBoundry = memoryBoundry;
+        this.memoryLocation = memoryLocation;
+        type = StorageType.PCB;
+    }
+    
 	public int getID() {
 		return processID;
 	}
@@ -18,5 +26,6 @@ public class PCB {
 	public State getState() {
 		return state;
 	}
+     }
 
-}
+

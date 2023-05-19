@@ -1,7 +1,13 @@
 package storage;
 
-public class Variable implements Storable {
+public class Variable extends Storable {
     private String name;
     private Object value;
-    private StorageType type = StorageType.VARIABLE;
+
+    public Variable(String name, Object value, int memoryLocation){
+        this.name = name;
+        this.value = value;
+        this.memoryLocation = memoryLocation;
+        type = StorageType.VARIABLE;
+    }
 }

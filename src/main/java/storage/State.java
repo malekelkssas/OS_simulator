@@ -1,5 +1,5 @@
 package storage;
 
 public enum State {
-    NEW,READY,BLOCKED,EXECUTE,FINISH
+    NEW, READY, BLOCKED, EXECUTE, FINISH
 }

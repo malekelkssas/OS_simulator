@@ -1,5 +1,9 @@
 package storage;
 
-public class UnParsedLine implements Storable {
-    private StorageType type = StorageType.UNPARSEDLINE;
+public class UnParsedLine extends Storable {
+
+    public UnParsedLine(int memoryLocation){
+        this.memoryLocation = memoryLocation;
+        type = StorageType.UNPARSEDLINE;
+    }
 }
