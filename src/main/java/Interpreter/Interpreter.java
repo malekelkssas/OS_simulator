@@ -1,11 +1,13 @@
 package Interpreter;
+import memory.Memory;
 import storage.*;
 public class Interpreter {
 	private Interpreter instance; 
-	private memory memory;
+	private Memory memory;
 	private Interpreter() {
 		instance = new Interpreter();
-		memory meme = new memory();
+		Memory memeory = new Memory();
+		Mutex metux = new Mutex();
 	}
 
 	public Interpreter getInstance() {
