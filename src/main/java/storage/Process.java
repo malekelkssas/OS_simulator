@@ -1,25 +1,48 @@
 package storage;
 
-public class Process {
-	private PCB pcb;
+import storage.pcb.MemoryBoundry;
+import storage.pcb.ProcessId;
+import storage.pcb.ProgramCounter;
+import storage.pcb.State;
 
-	public Process(int id) {
-		this.pcb = new PCB(id, State.NEW, null, 0);
-	}
+import java.io.Serializable;
 
-	public int getID() {
-		return this.pcb.getID();
-	}
+public class Process implements Serializable {
 
-	public void setID(int id) {
-		this.pcb.setID(id);
-	}
-	
-	public State getState() {
-		return this.pcb.getState();
-	}
-	
-	public void setState(State s) {
-		this.pcb.setState(s);
-	}
+    ProcessId ID;
+    MemoryBoundry memoryBoundry;
+    State state;
+    ProgramCounter pc;
+
+
+    public Process(int id, State state){
+        this.ID = new ProcessId(id);
+        this.state = new State(state);
+        this.pc = new ProgramCounter();
+        this.memoryBoundry = null;
+    }
+
+
+    public Storable getIDObj(){ return ID; }
+
+    public Storable getMemoryBoundryObj(){ return memoryBoundry; }
+
+    public Storable getStateObj(){ return state; }
+
+    public Storable getPCObj(){ return pc; }
+    public int getID() {
+        return ID.getId();
+    }
+
+    public State getState() {
+        return state.getState();
+    }
+
+
+    public MemoryBoundry getMemoryBoundry(){return memoryBoundry; }
+
+    public int getsize(){
+        return memoryBoundry.getsize();
+    }
+
 }

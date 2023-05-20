@@ -17,9 +17,9 @@ public class MutexTest {
 	@Test
 	void testUserInputMutex_TwoProcesses_SecondShouldBeBlocked() {
 		// Given 2 Processes and one resource
-		Process process1 = new Process(1);
+		Process process1 = new Process(1, null);
 		Resource resource = Resource.userInput;
-		Process process2 = new Process(2);
+		Process process2 = new Process(2, null);
 
 		// When both of them are trying to access the same resource
 		mutex.semWait(resource, process1);
@@ -32,9 +32,9 @@ public class MutexTest {
 	@Test
 	void testTwoDifferentMutex_TwoProcesses_NoOneShouldBeBlocked() {
 		// Given 2 Processes and two resources
-		Process process1 = new Process(1);
+		Process process1 = new Process(1, null);
 		Resource resource1 = Resource.userInput;
-		Process process2 = new Process(2);
+		Process process2 = new Process(2, null);
 		Resource resource2 = Resource.userOutput;
 
 		// When each of them is trying to access only one of the resources

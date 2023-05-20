@@ -2,8 +2,9 @@ package storage;
 
 public class UnParsedLine extends Storable {
 
-    public UnParsedLine(int memoryLocation){
-        this.memoryLocation = memoryLocation;
+    String unParsedLine;
+    public UnParsedLine(String unParsedLine){
+        this.unParsedLine = unParsedLine;
         type = StorageType.UNPARSEDLINE;
     }
 }
