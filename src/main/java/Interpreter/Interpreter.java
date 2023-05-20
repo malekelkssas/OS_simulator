@@ -1,5 +1,6 @@
 package Interpreter;
 import memory.Memory;
+import mutexes.Mutex;
 import storage.*;
 public class Interpreter {
 	private Interpreter instance; 
@@ -7,7 +8,7 @@ public class Interpreter {
 	private Interpreter() {
 		instance = new Interpreter();
 		Memory memeory = new Memory();
-		Mutex metux = new Mutex();
+		Mutex metux = Mutex.getInstance();
 	}
 
 	public Interpreter getInstance() {
