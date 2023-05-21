@@ -1,11 +1,11 @@
-package storage.pcb;
+package storage;
 
 import storage.Storable;
 import storage.StorageType;
 
 import java.io.Serializable;
 
-public class MemoryBoundry extends Storable implements Serializable,PCB {
+public class MemoryBoundry extends Storable implements Serializable{
     int start;
     int end;
 
@@ -31,8 +31,7 @@ public class MemoryBoundry extends Storable implements Serializable,PCB {
         this.start = start;
     }
 
-    @Override
-    public StorageType getType() { return type; }
+
     public int getsize(){
         return end-start+1;
     }
