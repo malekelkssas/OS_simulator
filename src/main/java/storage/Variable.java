@@ -9,4 +9,6 @@ public class Variable extends Storable {
         this.value = value;
         type = StorageType.VARIABLE;
     }
+
+    public Variable(){}
 }

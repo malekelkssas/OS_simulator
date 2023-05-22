@@ -5,10 +5,9 @@ import java.util.Vector;
 
 public class Process implements Serializable {
 
-    PCB pcb;
-    Vector<UnParsedLine> unParsedLines;
-    Vector<Variable> variables;
-    int numVariable;
+    private PCB pcb;
+    private Vector<UnParsedLine> unParsedLines;
+    private Vector<Variable> variables;
 
 
 
@@ -17,16 +16,14 @@ public class Process implements Serializable {
         this.unParsedLines = (Vector<UnParsedLine>) unParsedLines.clone();
         this.variables = (Vector<Variable>) variables.clone();
     }
+    public Process(int id, Vector<UnParsedLine> unParsedLines){
+        this.pcb = new PCB(id);
+        this.unParsedLines = (Vector<UnParsedLine>) unParsedLines.clone();
+        variables = new Vector<>();
+    }
 
     public Process(){}
 
-    public int getNumVariable() {
-        return numVariable;
-    }
-
-    public void setNumVariable(int numVariable) {
-        this.numVariable = numVariable;
-    }
 
     public PCB getPcb() {
         return pcb;

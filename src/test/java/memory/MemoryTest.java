@@ -30,13 +30,11 @@ public class MemoryTest {
             variables.add(null);
         }
         Process p1 = new Process(1, unParsedLines, variables);
-        p1.setNumVariable(6);
         Process p2 = new Process(2, unParsedLines, variables);
-        p2.setNumVariable(6);
 
         // when both of them allocate in the memory
-        memory.allocate(p1);
-        memory.allocate(p2);
+        memory.allocate(p1, 6);
+        memory.allocate(p2, 6);
 
         //then
         assertThat(memory.size()).isEqualTo(40);
@@ -52,10 +50,9 @@ public class MemoryTest {
             variables.add(null);
         }
         Process p1 = new Process(1, unParsedLines, variables);
-        p1.setNumVariable(10);
 
         // when the process allocate in the memory
-        memory.allocate(p1);
+        memory.allocate(p1, 10);
 
         //then
         assertThat(memory.size()).isEqualTo(24);
@@ -71,13 +68,11 @@ public class MemoryTest {
             variables.add(null);
         }
         Process p1 = new Process(1, unParsedLines, variables);
-        p1.setNumVariable(6);
         Process p2 = new Process(2, unParsedLines, variables);
-        p2.setNumVariable(6);
 
         // when both of them allocate in the memory
-        memory.allocate(p1);
-        memory.allocate(p2);
+        memory.allocate(p1, 6);
+        memory.allocate(p2, 6);
 
         //then
         assertThat(memory.size()).isEqualTo(40);

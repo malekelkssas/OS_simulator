@@ -8,4 +8,6 @@ public final class Constants {
 
     public static final String PROCESSES_LOCATION = "processes//";
 
+    public static final int PCB_SIZE = 4;
+
 }

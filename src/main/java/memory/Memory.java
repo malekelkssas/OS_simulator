@@ -31,29 +31,28 @@ public class Memory {
         }
         return instance;
     }
-    public void allocate(Process process) throws OSSimulatoeException {
-        int processSize = 4+process.getUnParsedLines().size()+process.getNumVariable();
+    public void allocate(Process process, int numOfVariables) throws OSSimulatoeException {
+        int processSize = Constants.PCB_SIZE + process.getUnParsedLines().size() + numOfVariables;
         while(processSize > getEmptyLocation()) { swap(); }
         int startMemBound = end;
         int MemBoundidx = allocatePCB(process);
         allocateParsedLine(process.getUnParsedLines());
-        allocateVariable(process.getNumVariable());
+        allocateVariable(numOfVariables);
         memory[MemBoundidx] = new MemoryBoundry(startMemBound,end-1);
     }
 
     private void allocateVariable(int numVariables) {
-        for (;numVariables!=0;incrementEnd(),numVariables--) { memory[end] = null; }
+        for (;numVariables!=0;incrementEnd(),numVariables--) { memory[end] = new Variable(); }
     }
 
     private void allocateParsedLine(Vector<UnParsedLine> unparsedlines) {
         for (UnParsedLine unParsedLine: unparsedlines) {
-            memory[end] = (Object)unParsedLine;
+            memory[end] = unParsedLine;
             incrementEnd();
         }
     }
 
     private int allocatePCB(Process process) {
-//        System.out.println(process.getID());
         memory[end] =  process.getID();
         incrementEnd();
         int endMemBound = end;
@@ -66,11 +65,11 @@ public class Memory {
     }
 
     public void swap() throws OSSimulatoeException {
-        //TODO: I am swapping randomly
-        int startidx = start;
-        int size = ((MemoryBoundry)memory[nextStartPointer()]).getsize();
+        int startidx = getReadyOrBlockecdProcess();
+        int tmpPointer = nextStartPointer(startidx);
+        int size = ((MemoryBoundry)memory[tmpPointer]).getsize();
+        size--; // for the skiped PCB ID
         while(size!=0){
-            if(size==1)
             incrementStart();
             size--;
         }
@@ -79,6 +78,47 @@ public class Memory {
         startidx = setUnparsedLine(startidx, process);
         setVariable(startidx, process);
         Serializer.serializeProcess(process);
+    }
+
+    private int getReadyOrBlockecdProcess() {
+        int startidx = start;
+        while(getProcrssState(startidx) != State.READY || getProcrssState(startidx) != State.BLOCKED)
+        {
+            startidx = getNextProcess(startidx);
+        }
+        return startidx;
+    }
+
+    private int getNextProcess(int startidx) {
+        startidx = skipPCB(startidx);
+        startidx = skipUnparsedLines(startidx);
+        startidx = skipVariables(startidx);
+        return startidx;
+    }
+
+    private int skipVariables(int startidx) {
+        while (memory[startidx] instanceof Variable)
+            startidx = nextStartPointer(startidx);
+        return startidx;
+    }
+
+    private int skipUnparsedLines(int startidx) {
+        while (memory[startidx] instanceof UnParsedLine)
+            startidx = nextStartPointer(startidx);
+        return startidx;
+    }
+
+    private int skipPCB(int startidx) {
+        for (int i=0; i!=4;i++)
+            startidx = nextStartPointer(startidx);
+        return startidx;
+    }
+
+    private State getProcrssState(int startidx) {
+        for(int i=0; i!=2;i++){
+            startidx = nextStartPointer(startidx);
+        }
+        return (State) memory[startidx];
     }
 
     private void setVariable(int startidx, Process process) {
