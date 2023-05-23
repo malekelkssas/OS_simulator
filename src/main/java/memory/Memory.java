@@ -31,26 +31,76 @@ public class Memory {
         return instance;
     }
 
-    private int getProcess(int id) throws NoSuchProcessException {
+    public Process getProcess(int id) throws NoSuchProcessException {
         int c = 0;
         int tmpPointer = start;
-        while (c < Constants.MEMORY_SIZE && (int)memory[tmpPointer] != id)
-        {
-            if((int)memory[tmpPointer] != id)
-                return tmpPointer;
-            c += ((MemoryBoundry)memory[nextPointer(tmpPointer)]).getsize();
+        while (memory[tmpPointer]!= null && c < Constants.MEMORY_SIZE && (int) memory[tmpPointer] != id) {
+            c += ((MemoryBoundry) memory[nextPointer(tmpPointer)]).getsize();
             tmpPointer = getNextProcess(tmpPointer);
         }
+        if (memory[tmpPointer] != null && (int) memory[tmpPointer] == id) {
+            PCB pcb = new PCB((int) memory[tmpPointer], (MemoryBoundry) memory[nextPointer(tmpPointer)],
+                    (State) memory[nextPointer(nextPointer(tmpPointer))], (int) memory[nextPointer(nextPointer(nextPointer(tmpPointer)))]);
+            tmpPointer = skipPCB(tmpPointer);
+            Vector<UnParsedLine> unParsedLines = getProcessUnParsedLine(tmpPointer);
+            tmpPointer = skipUnparsedLines(tmpPointer);
+            Vector<Variable> variables = getProcessVariable(tmpPointer);
+            return new Process(pcb, unParsedLines, variables);
+        }
+        return deserializeProcesses(id);
+    }
+
+    private Process deserializeProcesses(int id) throws NoSuchProcessException {
         try {
             Process process = Serializer.deserializeProcess(id);
-
+            allocate(process);
+            return process;
+        } catch (OSSimulatoeException e){
+            throw new NoSuchProcessException(Constants.NO_SUCH_PROCESS_ERROR_MESSAGE);
         }
-        catch (OSSimulatoeException e){
-            throw new NoSuchProcessException("No Such Process");
-        }
-        //TODO: complete the implementation
-        return -1;
     }
+
+    public void updateProcess(Process process) throws NoSuchProcessException {
+        int c = 0;
+        int tmpPointer = start;
+        while (c < Constants.MEMORY_SIZE && (int) memory[tmpPointer] != process.getID()) {
+            c += ((MemoryBoundry) memory[nextPointer(tmpPointer)]).getsize();
+            tmpPointer = getNextProcess(tmpPointer);
+        }
+        if (memory[tmpPointer] != null && (int) memory[tmpPointer] == process.getID()) {
+            tmpPointer = setPCB(tmpPointer, process);
+            tmpPointer = setUnparsedLine(tmpPointer, process);
+            setVariable(tmpPointer, process);
+        } else {
+            try {
+                Process process2 = Serializer.deserializeProcess(process.getID());
+                updateProcess(process2);
+            } catch (OSSimulatoeException e) {
+                throw new NoSuchProcessException(e.getMessage());
+            }
+        }
+    }
+
+
+
+    private Vector<Variable> getProcessVariable(int tmpPointer) {
+        Vector<Variable> ret = new Vector<>();
+        while (memory[tmpPointer] instanceof Variable){
+            ret.add((Variable) memory[tmpPointer]);
+            tmpPointer = nextPointer(tmpPointer);
+        }
+        return ret;
+    }
+
+    private Vector<UnParsedLine> getProcessUnParsedLine(int tmpPointer) {
+        Vector<UnParsedLine> ret = new Vector<>();
+        while (memory[tmpPointer] instanceof UnParsedLine){
+            ret.add((UnParsedLine) memory[tmpPointer]);
+            tmpPointer = nextPointer(tmpPointer);
+        }
+        return ret;
+    }
+
 
     public void allocate(Process process) throws OSSimulatoeException {
         int processSize = process.getsize();
@@ -61,7 +111,7 @@ public class Memory {
         int memBoundidx = allocatePCB(process);
         allocateParsedLine(process.getUnParsedLines());
         allocateVariable(process.getVariables());
-        memory[memBoundidx] = new MemoryBoundry(startMemBound, end-1);
+        memory[memBoundidx] = new MemoryBoundry(startMemBound, prevPointer(end));
     }
 
     private void allocateVariable(Vector<Variable> variables) {
@@ -100,14 +150,30 @@ public class Memory {
         Serializer.serializeProcess(process);
         setProcessesToNull(tmpPointer, process.getsize());
         removeFragmantetion();
+        resetMemoryBoundry();
+    }
+
+    private void resetMemoryBoundry() {
+        int tmpPointer = start;
+        int c = 0;
+        while (memory[tmpPointer] != null && c < Constants.MEMORY_SIZE){
+            int processSize = ((MemoryBoundry) memory[nextPointer(tmpPointer)]).getsize();
+            c+= processSize;
+            ((MemoryBoundry) memory[nextPointer(tmpPointer)]).setStart(tmpPointer);
+            int tmp = tmpPointer;
+            tmp = skipPCB(tmp);
+            tmp = skipUnparsedLines(tmp);
+            tmp = skipVariables(tmp);
+            ((MemoryBoundry) memory[nextPointer(tmpPointer)]).setEnd(prevPointer(tmp));
+            tmpPointer = getNextProcess(tmpPointer);
+        }
     }
 
     private void removeFragmantetion() {
         Object [] tmp = new Object[Constants.MEMORY_SIZE];
         int idx = start;
         int i = 0;
-        for(int c = 0; c!= Constants.MEMORY_SIZE;c++)
-        {
+        for (int c = 0; c!= Constants.MEMORY_SIZE; c++) {
             if (memory[idx] == null){
                 idx = nextPointer(idx);
                 continue;
@@ -116,6 +182,10 @@ public class Memory {
             idx = nextPointer(idx);
         }
         memory = tmp;
+        restructMemory();
+    }
+
+    private void restructMemory() {
         start = 0;
         nItems = 0;
         end = 0;
@@ -124,10 +194,10 @@ public class Memory {
             incrementEnd();
             c++;
         }
-        if(memory[end] != null && end != start)
+        if (memory[end] != null && end != start)
             incrementEnd();
-
     }
+
 
     private void setProcessesToNull(int tmpPointer, int size) {
         while (size--!=0){

@@ -1,5 +1,7 @@
 package memory;
 
+import constants.Constants;
+import exceptions.NoSuchProcessException;
 import exceptions.OSSimulatoeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,9 +11,11 @@ import storage.UnParsedLine;
 import storage.Variable;
 import storage.Process;
 
+import java.util.Arrays;
 import java.util.Vector;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MemoryTest {
     Memory memory;
@@ -132,7 +136,7 @@ public class MemoryTest {
         memory.allocate(p1);
         memory.allocate(p2);
         memory.allocate(p3);
-        FileController.removeProcess(p1.getID());
+        FileController.removeProcess(p2.getID());
 
         //then
         assertThat(memory.size()).isEqualTo(35);
@@ -188,7 +192,7 @@ public class MemoryTest {
         memory.allocate(p1);
         memory.allocate(p2);
         memory.allocate(p3);
-        FileController.removeProcess(p1.getID());
+        FileController.removeProcess(p2.getID());
 
         //then
         assertThat(memory.size()).isEqualTo(35);
@@ -220,5 +224,48 @@ public class MemoryTest {
 
         //then
         assertThat(memory.size()).isEqualTo(35);
+    }
+
+    @Test
+    void CheckProcessID_FromProcess_from_Memory() throws OSSimulatoeException {
+        // Given 2 Processes and one resource
+        Vector<UnParsedLine> unParsedLines = new Vector<>();
+        Vector<Variable> variables = new Vector<>();
+        for (int i=0;i!=10;i++){
+            unParsedLines.add(new UnParsedLine());
+        }
+        for (int i=0;i!=6;i++){
+            variables.add(new Variable());
+        }
+        Process p1 = new Process(1, unParsedLines, variables);
+
+        // when both of them allocate in the memory
+        memory.allocate(p1);
+
+        //then
+        assertThat(memory.getProcess(p1.getID()).getID()).isEqualTo(p1.getID());
+    }
+
+    @Test
+    void CheckUnValidProcessID_FromProcess_from_Memory() throws OSSimulatoeException {
+        // Given 2 Processes and one resource
+        Vector<UnParsedLine> unParsedLines = new Vector<>();
+        Vector<Variable> variables = new Vector<>();
+        for (int i=0;i!=10;i++){
+            unParsedLines.add(new UnParsedLine());
+        }
+        for (int i=0;i!=6;i++){
+            variables.add(new Variable());
+        }
+        Process p1 = new Process(1, unParsedLines, variables);
+
+        // when both of them allocate in the memory
+        memory.allocate(p1);
+
+        //then
+        Exception exception = assertThrows(NoSuchProcessException.class, () -> {
+            memory.getProcess(2);
+        });
+        assertThat(exception.getMessage()).isEqualTo(Constants.NO_SUCH_PROCESS_ERROR_MESSAGE);
     }
 }

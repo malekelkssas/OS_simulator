@@ -19,6 +19,12 @@ public class Process implements Serializable {
         this.variables = (Vector<Variable>) variables.clone();
     }
 
+    public Process(PCB pcb, Vector<UnParsedLine> unParsedLines, Vector<Variable> variables) {
+        this.pcb = pcb;
+        this.unParsedLines = (Vector<UnParsedLine>) unParsedLines.clone();
+        this.variables = (Vector<Variable>) variables.clone();
+    }
+
     public Process(int id, Vector<UnParsedLine> unParsedLines) {
         this.pcb = new PCB(id);
         this.unParsedLines = (Vector<UnParsedLine>) unParsedLines.clone();

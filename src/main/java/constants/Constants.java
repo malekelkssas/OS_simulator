@@ -10,4 +10,6 @@ public final class Constants {
 
     public static final int PCB_SIZE = 4;
 
+    public static final String NO_SUCH_PROCESS_ERROR_MESSAGE = "No Such Process";
+
 }

@@ -1,8 +1,5 @@
 package storage;
 
-import storage.Storable;
-import storage.StorageType;
-
 import java.io.Serializable;
 
 public class MemoryBoundry extends Storable implements Serializable{
@@ -12,7 +9,6 @@ public class MemoryBoundry extends Storable implements Serializable{
     public MemoryBoundry(int start, int end){
         this.start = start;
         this.end = end;
-        this.type = StorageType.PCB;
     }
 
     public int getEnd() {
@@ -34,5 +30,13 @@ public class MemoryBoundry extends Storable implements Serializable{
 
     public int getsize(){
         return Math.abs(end-start+1);
+    }
+
+    @Override
+    public String toString() {
+        return "MemoryBoundry{" +
+                "start=" + start +
+                ", end=" + end +
+                '}';
     }
 }
