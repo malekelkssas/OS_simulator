@@ -18,6 +18,12 @@ public class FileController {
 
 
     public static String getPath(int id) {
-        return Paths.get("").toAbsolutePath().toString()+ "//src//" + Constants.PROCESSES_LOCATION + id + Constants.DATA_EXTENSTION;
+        return Paths.get("").toAbsolutePath().toString() + "//" +Constants.PROCESSES_LOCATION + id + Constants.DATA_EXTENSTION;
+    }
+
+    public static void mkdir(){
+        File file = new File(Paths.get("").toAbsolutePath().toString()+"//processes");
+        if (!file.isDirectory())
+            file.mkdir();
     }
 }

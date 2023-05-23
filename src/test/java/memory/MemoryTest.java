@@ -24,6 +24,7 @@ public class MemoryTest {
     public void init(){
         memory = Memory.getInstance();
         memory.reset();
+        FileController.mkdir();
     }
 
     @Test
