@@ -33,6 +33,6 @@ public class MemoryBoundry extends Storable implements Serializable{
 
 
     public int getsize(){
-        return end-start+1;
+        return Math.abs(end-start+1);
     }
 }

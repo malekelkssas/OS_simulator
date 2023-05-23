@@ -1,5 +1,7 @@
 package storage;
 
+import constants.Constants;
+
 import java.io.Serializable;
 import java.util.Vector;
 
@@ -11,12 +13,13 @@ public class Process implements Serializable {
 
 
 
-    public Process(int id, Vector<UnParsedLine> unParsedLines, Vector<Variable> variables){
+    public Process(int id, Vector<UnParsedLine> unParsedLines, Vector<Variable> variables) {
         this.pcb = new PCB(id);
         this.unParsedLines = (Vector<UnParsedLine>) unParsedLines.clone();
         this.variables = (Vector<Variable>) variables.clone();
     }
-    public Process(int id, Vector<UnParsedLine> unParsedLines){
+
+    public Process(int id, Vector<UnParsedLine> unParsedLines) {
         this.pcb = new PCB(id);
         this.unParsedLines = (Vector<UnParsedLine>) unParsedLines.clone();
         variables = new Vector<>();
@@ -38,12 +41,13 @@ public class Process implements Serializable {
     }
 
     public int getID() {
-        return pcb.getID();
+        return pcb.getId();
     }
 
     public State getState() {
         return pcb.getState();
     }
+
     public void setState(State state) {
         pcb.setState(state);
     }
@@ -51,6 +55,7 @@ public class Process implements Serializable {
     public int getPC (){
         return pcb.getPc();
     }
+
     public void setPC(int pc){
         pcb.setPc(pc);
     }
@@ -71,11 +76,12 @@ public class Process implements Serializable {
         pcb.setPc(pcb.getPc()+1);
     }
 
-
-    public MemoryBoundry getMemoryBoundry(){return pcb.getMemoryBoundry(); }
+    public MemoryBoundry getMemoryBoundry(){
+        return pcb.getMemoryBoundry();
+    }
 
     public int getsize(){
-        return pcb.getMemoryBoundry().getsize();
+        return Constants.PCB_SIZE+ unParsedLines.size()+ variables.size();
     }
 
 }

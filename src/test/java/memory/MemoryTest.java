@@ -3,6 +3,7 @@ package memory;
 import exceptions.OSSimulatoeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import util.FileController;
 import storage.State;
 import storage.UnParsedLine;
 import storage.Variable;
@@ -18,6 +19,7 @@ public class MemoryTest {
     @BeforeEach
     public void init(){
         memory = Memory.getInstance();
+        memory.reset();
     }
 
     @Test
@@ -26,15 +28,17 @@ public class MemoryTest {
         Vector<UnParsedLine> unParsedLines = new Vector<>();
         Vector<Variable> variables = new Vector<>();
         for (int i=0;i!=10;i++){
-            unParsedLines.add(null);
-            variables.add(null);
+            unParsedLines.add(new UnParsedLine());
+        }
+        for (int i=0;i!=6;i++){
+            variables.add(new Variable());
         }
         Process p1 = new Process(1, unParsedLines, variables);
         Process p2 = new Process(2, unParsedLines, variables);
 
         // when both of them allocate in the memory
-        memory.allocate(p1, 6);
-        memory.allocate(p2, 6);
+        memory.allocate(p1);
+        memory.allocate(p2);
 
         //then
         assertThat(memory.size()).isEqualTo(40);
@@ -46,35 +50,175 @@ public class MemoryTest {
         Vector<UnParsedLine> unParsedLines = new Vector<>();
         Vector<Variable> variables = new Vector<>();
         for (int i=0;i!=10;i++){
-            unParsedLines.add(null);
-            variables.add(null);
+            unParsedLines.add(new UnParsedLine());
+            variables.add(new Variable());
         }
         Process p1 = new Process(1, unParsedLines, variables);
 
         // when the process allocate in the memory
-        memory.allocate(p1, 10);
+        memory.allocate(p1);
 
         //then
         assertThat(memory.size()).isEqualTo(24);
     }
 
     @Test
-    void testAllocate_Processes_MoreThanMemorySize() throws OSSimulatoeException {
+    void testAllocate_Processes_EqualMemorySize() throws OSSimulatoeException {
         // Given 2 Processes and one resource
         Vector<UnParsedLine> unParsedLines = new Vector<>();
         Vector<Variable> variables = new Vector<>();
         for (int i=0;i!=10;i++){
-            unParsedLines.add(null);
-            variables.add(null);
+            unParsedLines.add(new UnParsedLine());
+        }
+        for (int i=0;i!=6;i++){
+            variables.add(new Variable());
         }
         Process p1 = new Process(1, unParsedLines, variables);
         Process p2 = new Process(2, unParsedLines, variables);
 
         // when both of them allocate in the memory
-        memory.allocate(p1, 6);
-        memory.allocate(p2, 6);
+        memory.allocate(p1);
+        memory.allocate(p2);
 
         //then
         assertThat(memory.size()).isEqualTo(40);
+    }
+
+    @Test
+    void testMemorySize_byAllocateTwoProcesses_MoreThanMemorySize() throws OSSimulatoeException {
+        // Given 2 Processes and one resource
+        Vector<UnParsedLine> unParsedLines1 = new Vector<>();
+        Vector<Variable> variables = new Vector<>();
+        for (int i=0;i!=10;i++){
+            unParsedLines1.add(new UnParsedLine());
+        }
+        for (int i=0;i!=6;i++){
+            variables.add(new Variable());
+        }
+
+        Process p1 = new Process(1, unParsedLines1, variables);
+        p1.setState(State.READY);
+        Vector<UnParsedLine> unParsedLines2 = (Vector<UnParsedLine>) unParsedLines1.clone();
+        unParsedLines2.add(new UnParsedLine());
+        Process p2 = new Process(2, unParsedLines2, variables);
+
+        // when both of them allocate in the memory
+        memory.allocate(p1);
+        memory.allocate(p2);
+        FileController.removeProcess(p1.getID());
+        //then
+        assertThat(memory.size()).isEqualTo(21);
+    }
+
+    @Test
+    void testMemorySize_byAllocateThreeProcesses_theThirdReplaceTheSecond() throws OSSimulatoeException {
+        // Given 2 Processes and one resource
+        Vector<UnParsedLine> unParsedLines = new Vector<>();
+        Vector<Variable> variables = new Vector<>();
+        for (int i=0;i!=10;i++){
+            unParsedLines.add(new UnParsedLine());
+        }
+        for (int i=0;i!=6;i++){
+            variables.add(new Variable());
+        }
+        Process p1 = new Process(1, unParsedLines, variables);
+        Process p2 = new Process(2, unParsedLines, variables);
+        p2.setState(State.READY);
+        variables = new Vector<>();
+        variables.add(new Variable());
+        Process p3 = new Process(3, unParsedLines, variables);
+
+        // when both of them allocate in the memory
+        memory.allocate(p1);
+        memory.allocate(p2);
+        memory.allocate(p3);
+        FileController.removeProcess(p1.getID());
+
+        //then
+        assertThat(memory.size()).isEqualTo(35);
+    }
+
+    @Test
+    void testMemorySize_byAllocateThreeProcesses_theThirdReplaceTheFirst() throws OSSimulatoeException {
+        // Given 2 Processes and one resource
+        Vector<UnParsedLine> unParsedLines = new Vector<>();
+        Vector<Variable> variables = new Vector<>();
+        for (int i=0;i!=10;i++){
+            unParsedLines.add(new UnParsedLine());
+        }
+        for (int i=0;i!=6;i++){
+            variables.add(new Variable());
+        }
+        Process p1 = new Process(1, unParsedLines, variables);
+        p1.setState(State.READY);
+        Process p2 = new Process(2, unParsedLines, variables);
+        variables = new Vector<>();
+        variables.add(new Variable());
+        Process p3 = new Process(3, unParsedLines, variables);
+
+        // when both of them allocate in the memory
+        memory.allocate(p1);
+        memory.allocate(p2);
+        memory.allocate(p3);
+        FileController.removeProcess(p1.getID());
+
+        //then
+        assertThat(memory.size()).isEqualTo(35);
+    }
+
+    @Test
+    void testProcessesID_byAllocateThreeProcesses_theThirdReplaceTheSecond() throws OSSimulatoeException {
+        // Given 2 Processes and one resource
+        Vector<UnParsedLine> unParsedLines = new Vector<>();
+        Vector<Variable> variables = new Vector<>();
+        for (int i=0;i!=10;i++){
+            unParsedLines.add(new UnParsedLine());
+        }
+        for (int i=0;i!=6;i++){
+            variables.add(new Variable());
+        }
+        Process p1 = new Process(1, unParsedLines, variables);
+        Process p2 = new Process(2, unParsedLines, variables);
+        p2.setState(State.READY);
+        variables = new Vector<>();
+        variables.add(new Variable());
+        Process p3 = new Process(3, unParsedLines, variables);
+
+        // when both of them allocate in the memory
+        memory.allocate(p1);
+        memory.allocate(p2);
+        memory.allocate(p3);
+        FileController.removeProcess(p1.getID());
+
+        //then
+        assertThat(memory.size()).isEqualTo(35);
+    }
+
+    @Test
+    void testProcessesID_byAllocateThreeProcesses_theThirdReplaceTheFirst() throws OSSimulatoeException {
+        // Given 2 Processes and one resource
+        Vector<UnParsedLine> unParsedLines = new Vector<>();
+        Vector<Variable> variables = new Vector<>();
+        for (int i=0;i!=10;i++){
+            unParsedLines.add(new UnParsedLine());
+        }
+        for (int i=0;i!=6;i++){
+            variables.add(new Variable());
+        }
+        Process p1 = new Process(1, unParsedLines, variables);
+        p1.setState(State.READY);
+        Process p2 = new Process(2, unParsedLines, variables);
+        variables = new Vector<>();
+        variables.add(new Variable());
+        Process p3 = new Process(3, unParsedLines, variables);
+
+        // when both of them allocate in the memory
+        memory.allocate(p1);
+        memory.allocate(p2);
+        memory.allocate(p3);
+        FileController.removeProcess(p1.getID());
+
+        //then
+        assertThat(memory.size()).isEqualTo(35);
     }
 }

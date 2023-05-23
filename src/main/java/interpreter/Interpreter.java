@@ -2,10 +2,11 @@ package interpreter;
 
 import memory.Memory;
 import mutexes.Mutex;
-import storage.*;
+
 public class Interpreter {
     private Interpreter instance;
     private Memory memory;
+
     private Interpreter() {
         instance = new Interpreter();
         Memory memeory = new Memory();
@@ -23,6 +24,8 @@ public class Interpreter {
 
     }
 
-    public Memory getMemory(){ return memory; }
+    public Memory getMemory(){
+        return memory;
+    }
 
 }

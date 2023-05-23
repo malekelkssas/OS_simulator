@@ -1,6 +1,8 @@
 package storage;
 
-public class Variable extends Storable {
+import java.io.Serializable;
+
+public class Variable extends Storable implements Serializable {
     private String name;
     private Object value;
 
@@ -11,4 +13,12 @@ public class Variable extends Storable {
     }
 
     public Variable(){}
+
+    @Override
+    public String toString() {
+        return "Variable{" +
+                "name='" + name + '\'' +
+                ", value=" + value +
+                '}';
+    }
 }

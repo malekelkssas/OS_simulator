@@ -1,12 +1,11 @@
 package memory;
 
+import exceptions.NoSuchProcessException;
 import exceptions.OSSimulatoeException;
-import processesSwaper.Serializer;
+import util.Serializer;
 import storage.*;
 import constants.Constants;
 import storage.Process;
-
-import java.util.ArrayList;
 import java.util.Vector;
 
 public class Memory {
@@ -31,18 +30,45 @@ public class Memory {
         }
         return instance;
     }
-    public void allocate(Process process, int numOfVariables) throws OSSimulatoeException {
-        int processSize = Constants.PCB_SIZE + process.getUnParsedLines().size() + numOfVariables;
-        while(processSize > getEmptyLocation()) { swap(); }
-        int startMemBound = end;
-        int MemBoundidx = allocatePCB(process);
-        allocateParsedLine(process.getUnParsedLines());
-        allocateVariable(numOfVariables);
-        memory[MemBoundidx] = new MemoryBoundry(startMemBound,end-1);
+
+    private int getProcess(int id) throws NoSuchProcessException {
+        int c = 0;
+        int tmpPointer = start;
+        while (c < Constants.MEMORY_SIZE && (int)memory[tmpPointer] != id)
+        {
+            if((int)memory[tmpPointer] != id)
+                return tmpPointer;
+            c += ((MemoryBoundry)memory[nextPointer(tmpPointer)]).getsize();
+            tmpPointer = getNextProcess(tmpPointer);
+        }
+        try {
+            Process process = Serializer.deserializeProcess(id);
+
+        }
+        catch (OSSimulatoeException e){
+            throw new NoSuchProcessException("No Such Process");
+        }
+        //TODO: complete the implementation
+        return -1;
     }
 
-    private void allocateVariable(int numVariables) {
-        for (;numVariables!=0;incrementEnd(),numVariables--) { memory[end] = new Variable(); }
+    public void allocate(Process process) throws OSSimulatoeException {
+        int processSize = process.getsize();
+        while (processSize > getEmptyLocation()) {
+            swap();
+        }
+        int startMemBound = end;
+        int memBoundidx = allocatePCB(process);
+        allocateParsedLine(process.getUnParsedLines());
+        allocateVariable(process.getVariables());
+        memory[memBoundidx] = new MemoryBoundry(startMemBound, end-1);
+    }
+
+    private void allocateVariable(Vector<Variable> variables) {
+        for (Variable variable: variables) {
+            memory[end] = variable;
+            incrementEnd();
+        }
     }
 
     private void allocateParsedLine(Vector<UnParsedLine> unparsedlines) {
@@ -53,7 +79,7 @@ public class Memory {
     }
 
     private int allocatePCB(Process process) {
-        memory[end] =  process.getID();
+        memory[end] = process.getID();
         incrementEnd();
         int endMemBound = end;
         incrementEnd();
@@ -64,26 +90,55 @@ public class Memory {
         return endMemBound;
     }
 
-    public void swap() throws OSSimulatoeException {
+    private void swap() throws OSSimulatoeException {
         int startidx = getReadyOrBlockecdProcess();
-        int tmpPointer = nextStartPointer(startidx);
-        int size = ((MemoryBoundry)memory[tmpPointer]).getsize();
-        size--; // for the skiped PCB ID
-        while(size!=0){
-            incrementStart();
-            size--;
-        }
+        int tmpPointer = startidx;
         Process process = new Process();
         startidx = setPCB(startidx, process);
         startidx = setUnparsedLine(startidx, process);
         setVariable(startidx, process);
         Serializer.serializeProcess(process);
+        setProcessesToNull(tmpPointer, process.getsize());
+        removeFragmantetion();
+    }
+
+    private void removeFragmantetion() {
+        Object [] tmp = new Object[Constants.MEMORY_SIZE];
+        int idx = start;
+        int i = 0;
+        for(int c = 0; c!= Constants.MEMORY_SIZE;c++)
+        {
+            if (memory[idx] == null){
+                idx = nextPointer(idx);
+                continue;
+            }
+            tmp[i++] = memory[idx];
+            idx = nextPointer(idx);
+        }
+        memory = tmp;
+        start = 0;
+        nItems = 0;
+        end = 0;
+        int c = 0;
+        while (memory[nextPointer(end)] !=null && c!=Constants.MEMORY_SIZE) {
+            incrementEnd();
+            c++;
+        }
+        if(memory[end] != null && end != start)
+            incrementEnd();
+
+    }
+
+    private void setProcessesToNull(int tmpPointer, int size) {
+        while (size--!=0){
+            memory[tmpPointer] = null;
+            tmpPointer = nextPointer(tmpPointer);
+        }
     }
 
     private int getReadyOrBlockecdProcess() {
         int startidx = start;
-        while(getProcrssState(startidx) != State.READY || getProcrssState(startidx) != State.BLOCKED)
-        {
+        while ( !(getProcrssState(startidx).equals(State.READY) ^ getProcrssState(startidx).equals(State.BLOCKED))) {
             startidx = getNextProcess(startidx);
         }
         return startidx;
@@ -98,43 +153,43 @@ public class Memory {
 
     private int skipVariables(int startidx) {
         while (memory[startidx] instanceof Variable)
-            startidx = nextStartPointer(startidx);
+            startidx = nextPointer(startidx);
         return startidx;
     }
 
     private int skipUnparsedLines(int startidx) {
         while (memory[startidx] instanceof UnParsedLine)
-            startidx = nextStartPointer(startidx);
+            startidx = nextPointer(startidx);
         return startidx;
     }
 
     private int skipPCB(int startidx) {
-        for (int i=0; i!=4;i++)
-            startidx = nextStartPointer(startidx);
+        for (int i=0; i!=4; i++)
+            startidx = nextPointer(startidx);
         return startidx;
     }
 
     private State getProcrssState(int startidx) {
-        for(int i=0; i!=2;i++){
-            startidx = nextStartPointer(startidx);
+        for (int i=0; i!=2; i++) {
+            startidx = nextPointer(startidx);
         }
         return (State) memory[startidx];
     }
 
     private void setVariable(int startidx, Process process) {
         Vector<Variable> arr = new Vector<>();
-        while(memory[startidx] instanceof Variable){
+        while (memory[startidx] instanceof Variable) {
             arr.add((Variable) memory[startidx]);
-            nextStartPointer(startidx);
+            startidx = nextPointer(startidx);
         }
         process.setVariables(arr);
     }
 
     private int setUnparsedLine(int startidx, Process process) {
         Vector<UnParsedLine> arr = new Vector<>();
-        while(memory[startidx] instanceof UnParsedLine){
+        while (memory[startidx] instanceof UnParsedLine){
             arr.add((UnParsedLine) memory[startidx]);
-            nextStartPointer(startidx);
+            startidx = nextPointer(startidx);
         }
         process.setUnParsedLines(arr);
         return startidx;
@@ -142,13 +197,13 @@ public class Memory {
 
     private int setPCB(int startidx, Process process) {
         int id = (int) memory[startidx];
-        startidx = nextStartPointer(startidx);
+        startidx = nextPointer(startidx);
         MemoryBoundry memoryBoundry = (MemoryBoundry) memory[startidx];
-        startidx = nextStartPointer(startidx);
+        startidx = nextPointer(startidx);
         State state = (State) memory[startidx];
-        startidx = nextStartPointer(startidx);
+        startidx = nextPointer(startidx);
         int pc = (int) memory[startidx];
-        startidx = nextStartPointer(startidx);
+        startidx = nextPointer(startidx);
         process.setPcb(new PCB(id, memoryBoundry, state, pc));
         return startidx;
     }
@@ -157,39 +212,79 @@ public class Memory {
         return nItems == 0;
     }
 
-    public int emptyLocation(){ return Constants.MEMORY_SIZE-nItems; }
+    public int emptyLocation(){
+        return Constants.MEMORY_SIZE-nItems;
+    }
 
     public boolean isFull() {
         return (nItems == Constants.MEMORY_SIZE);
     }
+
     public int size(){
         return nItems;
     }
 
-    public int getEmptyLocation(){ return Constants.MEMORY_SIZE - nItems; }
 
-    public void incrementEnd(){
+    public int getEmptyLocation(){
+        return Constants.MEMORY_SIZE - nItems;
+    }
+
+    private void incrementEnd(){
         if (end == Constants.MEMORY_SIZE-1)
             end=0;
         else
             end++;
         nItems++;
     }
-    public void incrementStart(){
+
+    private void decrementEnd() {
+        if (end == 0)
+            end=Constants.MEMORY_SIZE-1;
+        else
+            end--;
+        nItems--;
+    }
+
+    private void incrementStart(){
         if (start == Constants.MEMORY_SIZE-1)
             start=0;
         else
             start++;
         nItems--;
     }
-    public int nextStartPointer(){
-        if(start==Constants.MEMORY_SIZE-1)
+
+    private int nextStartPointer() {
+        if (start==Constants.MEMORY_SIZE-1)
             return 0;
         return start+1;
     }
-    public int nextStartPointer(int start){
-        if(start==Constants.MEMORY_SIZE-1)
+
+    private int nextPointer(int start) {
+        if (start==Constants.MEMORY_SIZE-1)
             return 0;
         return start+1;
+    }
+
+    private int prevPointer(int start) {
+        if (start== 0)
+            return Constants.MEMORY_SIZE-1;
+        return start-1;
+    }
+
+    public String toSrting(){
+        String ret = new String();
+        int tmpPointer = start;
+        while (tmpPointer!= end){
+            ret += memory[tmpPointer].toString();
+            tmpPointer = nextPointer(tmpPointer);
+        }
+        return ret;
+    }
+
+    public void reset(){
+        memory = new Object[Constants.MEMORY_SIZE];
+        start = 0;
+        end = 0;
+        nItems = 0;
     }
 }
