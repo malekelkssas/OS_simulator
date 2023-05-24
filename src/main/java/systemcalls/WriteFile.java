@@ -4,14 +4,14 @@ import java.io.*;
 import java.util.*;
 
 public class WriteFile {
-	private PrintWriter pw;
+	private static PrintWriter pw;
 
-	public void writeFile(ArrayList<String> fileLines, String filePath) throws IOException {
+	public static void writeFile(String fileLines, String filePath) throws IOException {
 		pw = new PrintWriter(new FileWriter(filePath));
 
-		for (String line : fileLines) {
-			pw.println(line);
-		}
+		
+		pw.println(fileLines);
+		
 		pw.flush();
 		pw.close();
 	}
