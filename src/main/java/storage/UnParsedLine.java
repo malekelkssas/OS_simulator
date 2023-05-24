@@ -19,4 +19,12 @@ public class UnParsedLine extends Storable implements Serializable {
                 "unParsedLine='" + unParsedLine + '\'' +
                 '}';
     }
+    
+    public String getunParsedLine() {
+    	return unParsedLine;
+    }
+    
+    public String [] getSplittedLine() {
+    	return unParsedLine.split(" ");
+    }
 }

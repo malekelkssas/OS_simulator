@@ -82,7 +82,6 @@ public class Memory {
     }
 
 
-
     private Vector<Variable> getProcessVariable(int tmpPointer) {
         Vector<Variable> ret = new Vector<>();
         while (memory[tmpPointer] instanceof Variable){
