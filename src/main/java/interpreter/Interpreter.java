@@ -1,6 +1,7 @@
 package interpreter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Vector;
 import memory.Memory;
@@ -28,8 +29,18 @@ public class Interpreter {
 		return instance;
 	}
 
-	public static void read(Process process) throws IOException {
-		UnParsedLine instruction = process.getUnParsedLines().get(process.getPC());
+	public static void executeInstruction(Process process) throws IOException {
+		int pc = process.getPC();
+		if (pc < process.getUnParsedLines().size()) {
+			UnParsedLine instruction = process.getUnParsedLines().get(pc);
+			parse(process, instruction);
+		} else {
+			process.setState(State.FINISH);
+		}
+		process.inccrPC();
+	}
+
+	public static void parse(Process process, UnParsedLine instruction) throws IOException {
 		thePrints(instruction, process);
 		if (instruction.getSplittedLine()[0].equals("print")) {
 			printing(instruction.getSplittedLine()[1]);
@@ -46,7 +57,6 @@ public class Interpreter {
 		} else if (instruction.getSplittedLine()[0].equals("semSignal")) {
 			semSignal(instruction.getSplittedLine()[1], process);
 		}
-		process.inccrPC();
 	}
 
 	private static void thePrints(UnParsedLine instruction, Process process) {
@@ -128,7 +138,7 @@ public class Interpreter {
 		return memory;
 	}
 
-	public static Process getProcessReady(String[] lines) {
+	public static Process getProcessReady(ArrayList<String> lines) {
 		Vector<UnParsedLine> unParsedLines = new Vector<UnParsedLine>();
 		Vector<Variable> variblesToAdd = new Vector<Variable>();
 		HashSet<String> varibles = new HashSet<String>();
