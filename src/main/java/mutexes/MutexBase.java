@@ -39,7 +39,7 @@ public abstract class MutexBase implements Mutexable {
 
 	}
 
-	private boolean isAvailable() {
+	public boolean isAvailable() {
 
 		return value == 1;
 	}

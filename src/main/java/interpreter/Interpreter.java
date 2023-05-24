@@ -30,6 +30,7 @@ public class Interpreter {
 
 	public static void read(Process process) throws IOException {
 		UnParsedLine instruction = process.getUnParsedLines().get(process.getPC());
+
 		thePrints(instruction, process);
 		if (instruction.getSplittedLine()[0].equals("print")) {
 			printing(instruction.getSplittedLine()[1]);
