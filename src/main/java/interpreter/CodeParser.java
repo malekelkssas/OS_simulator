@@ -22,7 +22,7 @@ public class CodeParser {
 
 	public static void main(String[] args) throws IOException {
 		Process p1 = Interpreter.getProcessReady(readFile("Program_1.txt"));
-
+		
 	}
 
 }

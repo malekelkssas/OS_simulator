@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Vector;
+
+import exceptions.OSSimulatoeException;
 import memory.Memory;
 import mutexes.Mutex;
 import storage.*;
@@ -29,18 +31,19 @@ public class Interpreter {
 		return instance;
 	}
 
-	public static void executeInstruction(Process process) throws IOException {
+	public static void executeInstruction(Process process) throws IOException, OSSimulatoeException {
 		int pc = process.getPC();
 		if (pc < process.getUnParsedLines().size()) {
 			UnParsedLine instruction = process.getUnParsedLines().get(pc);
 			parse(process, instruction);
 		} else {
 			process.setState(State.FINISH);
+			WriteMemory.updateProcess(process);
 		}
 		process.inccrPC();
 	}
 
-	public static void parse(Process process, UnParsedLine instruction) throws IOException {
+	public static void parse(Process process, UnParsedLine instruction) throws IOException, OSSimulatoeException {
 		thePrints(instruction, process);
 		if (instruction.getSplittedLine()[0].equals("print")) {
 			printing(instruction.getSplittedLine()[1]);
@@ -98,7 +101,8 @@ public class Interpreter {
 		}
 	}
 
-	private static void prepareassign(UnParsedLine instruction, Process process) throws IOException {
+	private static void prepareassign(UnParsedLine instruction, Process process)
+			throws IOException, OSSimulatoeException {
 		Object valueb = null;
 		String operation = instruction.getSplittedLine()[2];
 		if (operation.equals("input")) {
@@ -114,7 +118,7 @@ public class Interpreter {
 		}
 		String valuea = instruction.getSplittedLine()[1];
 		assign(valuea, valueb, process);
-		// WriteMemory.update(process); TODO update the process
+		WriteMemory.updateProcess(process);
 	}
 
 	private static Object getVarible(String name, Process process) {
