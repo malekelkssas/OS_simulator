@@ -269,4 +269,30 @@ public class MemoryTest {
         });
         assertThat(exception.getMessage()).isEqualTo(Constants.NO_SUCH_PROCESS_ERROR_MESSAGE);
     }
+
+    @Test
+    void UpdateProcesses_PCAttribute() throws OSSimulatoeException {
+        // Given 2 Processes and one resource
+        Vector<UnParsedLine> unParsedLines = new Vector<>();
+        Vector<Variable> variables = new Vector<>();
+        for (int i=0;i!=10;i++){
+            unParsedLines.add(new UnParsedLine());
+        }
+        for (int i=0;i!=6;i++){
+            variables.add(new Variable());
+        }
+        Process p1 = new Process(1, unParsedLines, variables);
+
+        // when both of them allocate in the memory
+        memory.allocate(p1);
+        p1 = memory.getProcess(p1.getID());
+        p1.getVariables().get(0).setName("malek");
+        p1.getVariables().get(0).setValue(10);
+        memory.updateProcess(p1);
+        p1 = memory.getProcess(p1.getID());
+        boolean asser = p1.getVariables().get(0).getName().equals("malek") && (int) p1.getVariables().get(0).getValue() == 10 ? true:false;
+        //then
+        assertThat(asser).isEqualTo(true);
+    }
+
 }

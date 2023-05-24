@@ -1,6 +1,11 @@
 package Serializer;
 
+import org.junit.jupiter.api.BeforeEach;
+
 public class SerializingTest {
 
-    //TODO: implemeting some tests for serializing
+    @BeforeEach
+    public void init(){
+    }
+
 }
