@@ -89,5 +89,9 @@ public class Process implements Serializable {
     public int getsize(){
         return Constants.PCB_SIZE+ unParsedLines.size()+ variables.size();
     }
+    
+    public void writeInMemory() {
+    	
+    }
 
 }
