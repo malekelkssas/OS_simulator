@@ -3,10 +3,8 @@ package Interpreter;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Vector;
-
 import memory.Memory;
 import mutexes.Mutex;
-
 import storage.*;
 import systemcalls.*;
 import storage.Process;
@@ -144,7 +142,6 @@ public class interpreter {
 		for (String var : varibles) {
 			variblesToAdd.add(new Variable(var, null));
 		}
-		
 		return new Process(++processid, unParsedLines, variblesToAdd);
 	}
 	
