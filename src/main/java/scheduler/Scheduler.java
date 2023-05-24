@@ -10,6 +10,7 @@ import storage.State;
 public class Scheduler {
     private static Scheduler instance = null;
     private Queue<Process> readyQueue;
+    private Queue<Process> blockedQueue;
     private int timeSlice;
 
     private Scheduler(int timeSlice, Queue<Process> readyQueue) {
@@ -30,6 +31,10 @@ public class Scheduler {
 
     public void addToReadyQueue(Process process) {
        this.readyQueue.add(process);
+    }
+
+    public Queue<Process> getBlockedQueue() {
+        return this.blockedQueue;
     }
 
     public Process getNextProcess() {
