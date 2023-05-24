@@ -1,4 +1,4 @@
-package interpreter;
+package Interpreter;
 
 import memory.Memory;
 import mutexes.Mutex;
