@@ -8,67 +8,72 @@ import storage.Process;
 import storage.State;
 
 public class Scheduler {
-    private static Scheduler instance = null;
-    private Queue<Process> readyQueue;
-    private Queue<Process> blockedQueue;
-    private int timeSlice;
+	private static Scheduler instance = null;
+	private Queue<Process> readyQueue;
+	private Queue<Process> blockedQueue;
+	private int timeSlice;
 
-    private Scheduler(int timeSlice, Queue<Process> readyQueue) {
-        this.timeSlice = timeSlice;
-        this.readyQueue = readyQueue;
-    }
+	private Scheduler() {
 
-    public Scheduler getInstance() {
-        if (instance == null) {
-            instance = new Scheduler(timeSlice,readyQueue);
-        }
-        return instance;
-    }
+	}
 
-    public Queue<Process> getReadyQueue() {
-        return this.readyQueue;
-    }
+	public static Scheduler getInstance() {
+		if (instance == null) {
+			instance = new Scheduler();
+		}
+		return instance;
+	}
 
-    public void addToReadyQueue(Process process) {
-       this.readyQueue.add(process);
-    }
+	public Queue<Process> getReadyQueue() {
+		return this.readyQueue;
+	}
 
-    public Queue<Process> getBlockedQueue() {
-        return this.blockedQueue;
-    }
+	public void addToReadyQueue(Process process) {
+		this.readyQueue.add(process);
+	}
+	
+	public void addToBlockedQueue(Process process) {
+		this.blockedQueue.add(process);
+	}
 
-    public Process getNextProcess() {
-        return this.readyQueue.poll();
-    }
+	public Queue<Process> getBlockedQueue() {
+		return this.blockedQueue;
+	}
 
-    public boolean hasProcess() {
-        return !this.readyQueue.isEmpty();
-    }
+	public Process getNextProcess() {
+		return this.readyQueue.poll();
+	}
 
-    public  int getTimeSlice() {
-        return this.timeSlice;
-    }
+	public boolean hasProcess() {
+		return !this.readyQueue.isEmpty();
+	}
 
-    public void setTimeSlice(int timeSlice) {
-        this.timeSlice = timeSlice;
-    }
+	public int getTimeSlice() {
+		return this.timeSlice;
+	}
 
-    public void run() throws IOException {
-        while (this.hasProcess()) {
-            Process process = this.getNextProcess();
-            int remTime = timeSlice;
-            process.getPcb().setState(State.EXECUTE);
-            while(remTime-- > 0) {
-                Interpreter.read(process);
-                if(process.getPcb().getState().equals(State.BLOCKED) || process.getPcb().getState().equals(State.FINISH)) {
-                    break;
-                }
-            }
+	public void setTimeSlice(int timeSlice) {
+		this.timeSlice = timeSlice;
+	}
 
-            if(!process.getPcb().getState().equals(State.BLOCKED) || !process.getPcb().getState().equals(State.FINISH)) {
-                this.addToReadyQueue(process);
-            }
-        }
-    }
+	public void run() throws IOException {
+		while (this.hasProcess()) {
+			Process process = this.getNextProcess();
+			int remTime = timeSlice;
+			process.getPcb().setState(State.EXECUTE);
+			while (remTime-- > 0) {
+				Interpreter.read(process);
+				if (process.getPcb().getState().equals(State.BLOCKED)
+						|| process.getPcb().getState().equals(State.FINISH)) {
+					break;
+				}
+			}
+
+			if (!process.getPcb().getState().equals(State.BLOCKED)
+					|| !process.getPcb().getState().equals(State.FINISH)) {
+				this.addToReadyQueue(process);
+			}
+		}
+	}
 
 }
