@@ -4,16 +4,12 @@ import java.io.*;
 import java.util.*;
 
 public class ReadFile {
-	private BufferedReader br;
+	private static BufferedReader br;
 
-	public ArrayList<String> readFile(String filePath) throws IOException {
+	public static String readFile(String filePath) throws IOException {
 		br = new BufferedReader(new FileReader(filePath));
-		ArrayList<String> fileLines = new ArrayList<>();
-		String line;
-		while ((line = br.readLine()) != null) {
-			fileLines.add(line);
-		}
+		String line = br.readLine();
 		br.close();
-		return fileLines;
+		return line;
 	}
 }

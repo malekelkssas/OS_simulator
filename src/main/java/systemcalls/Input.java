@@ -6,7 +6,7 @@ public class Input {
 	
 	private Scanner sc;
 
-	public String readInput() {
+	public static String readInput() {
 		sc = new Scanner(System.in);
 		return sc.nextLine();
 	}
