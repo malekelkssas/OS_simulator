@@ -1,4 +1,4 @@
-package Interpreter;
+package interpreter;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -29,9 +29,7 @@ public class Interpreter {
 	}
 
 	public static void read(Process process) throws IOException {
-		int pc = process.getPC();
-		process.inccrPC();
-		UnParsedLine instruction = process.getUnParsedLines().get(pc);
+		UnParsedLine instruction = process.getUnParsedLines().get(process.getPC());
 		thePrints(instruction, process);
 		if (instruction.getSplittedLine()[0].equals("print")) {
 			printing(instruction.getSplittedLine()[1]);
@@ -48,6 +46,7 @@ public class Interpreter {
 		} else if (instruction.getSplittedLine()[0].equals("semSignal")) {
 			semSignal(instruction.getSplittedLine()[1], process);
 		}
+		process.inccrPC();
 	}
 
 	private static void thePrints(UnParsedLine instruction, Process process) {
