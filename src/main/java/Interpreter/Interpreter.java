@@ -10,20 +10,20 @@ import systemcalls.*;
 import storage.Process;
 import mutexes.Resource;
 
-public class interpreter {
-	private interpreter instance;
+public class Interpreter {
+	private Interpreter instance;
 	private Memory memory;
 	private static int processid;
 
-	private interpreter() {
-		instance = new interpreter();
+	private Interpreter() {
+		instance = new Interpreter();
 		Memory memeory = new Memory();
 		Mutex metux = Mutex.getInstance();
 	}
 
-	public interpreter getInstance() {
+	public Interpreter getInstance() {
 		if (instance == null) {
-			instance = new interpreter();
+			instance = new Interpreter();
 		}
 		return instance;
 	}
@@ -49,9 +49,7 @@ public class interpreter {
 			semSignal(instruction.getSplittedLine()[1], process);
 		}
 	}
-	
-	
-	
+
 	private static void thePrints(UnParsedLine instruction, Process process) {
 		System.out.println("Currently executing process: " + process.toString());
 		System.out.println("Currently executing instruction: " + instruction);
@@ -61,12 +59,12 @@ public class interpreter {
 		String resource = (String) getVarible(line, process);
 		Mutex.getInstance().semWait(Resource.valueOf(resource), process);
 	}
-	
+
 	private static void semSignal(String line, Process process) {
 		String resource = (String) getVarible(line, process);
 		Mutex.getInstance().semSignal(Resource.valueOf(resource), process);
 	}
-	
+
 	private static void printing(String toPrint) {
 		Print.print(toPrint);
 	}
@@ -131,7 +129,7 @@ public class interpreter {
 		return memory;
 	}
 
-	public static Process getProcessReady(String [] lines) {
+	public static Process getProcessReady(String[] lines) {
 		Vector<UnParsedLine> unParsedLines = new Vector<UnParsedLine>();
 		Vector<Variable> variblesToAdd = new Vector<Variable>();
 		HashSet<String> varibles = new HashSet<String>();
@@ -144,21 +142,22 @@ public class interpreter {
 		}
 		return new Process(++processid, unParsedLines, variblesToAdd);
 	}
-	
+
 	private static HashSet<String> checkVarible(String line) {
 		HashSet<String> varibles = new HashSet<String>();
-		String [] splitedLines = line.split(" ");
-		for (int i =0;i<splitedLines.length;i++) {
-			if(!splitedLines[i].equals("print") || !splitedLines[i].equals("assign")|| !splitedLines[i].equals("writeFile")
-					|| !splitedLines[i].equals("readFile") || !splitedLines[i].equals("semWait") || !splitedLines[i].equals("semSignal") || splitedLines[i].equals("input") 
-					|| !splitedLines[i].equals("userOutput") || !splitedLines[i].equals("userInput") || !splitedLines[i].equals("file")) {
-				if(splitedLines[i].matches(".")) {
+		String[] splitedLines = line.split(" ");
+		for (int i = 0; i < splitedLines.length; i++) {
+			if (!splitedLines[i].equals("print") || !splitedLines[i].equals("assign")
+					|| !splitedLines[i].equals("writeFile") || !splitedLines[i].equals("readFile")
+					|| !splitedLines[i].equals("semWait") || !splitedLines[i].equals("semSignal")
+					|| splitedLines[i].equals("input") || !splitedLines[i].equals("userOutput")
+					|| !splitedLines[i].equals("userInput") || !splitedLines[i].equals("file")) {
+				if (splitedLines[i].matches(".")) {
 					varibles.add(splitedLines[i]);
 				}
 			}
 		}
 		return varibles;
 	}
-	
-	
+
 }
