@@ -33,24 +33,18 @@ public class interpreter {
 		int pc = process.getPC();
 		process.inccrPC();
 		UnParsedLine instruction = process.getUnParsedLines().get(pc);
-		System.out.println("Currently executing process: "+ process.toString());
-		System.out.println("Currently executing instruction: "+ instruction);
+		System.out.println("Currently executing process: " + process.toString());
+		System.out.println("Currently executing instruction: " + instruction);
 		if (instruction.getSplittedLine()[0].equals("print")) {
-			String toPrint = instruction.getSplittedLine()[1];
-			Print.print(toPrint);
+			printing(instruction.getSplittedLine()[1]);
 		} else if (instruction.getSplittedLine()[0].equals("assign")) {
 			prepareassign(instruction, process);
 		} else if (instruction.getSplittedLine()[0].equals("writeFile")) {
-			String fileName = (String) getVarible(instruction.getSplittedLine()[1], process);
-			String value = (String) getVarible(instruction.getSplittedLine()[2], process);
-			WriteFile.writeFile(value, fileName);
+			writeToFile(instruction.getSplittedLine(), process);
 		} else if (instruction.getSplittedLine()[0].equals("readFile")) {
-			String fileName = (String) getVarible(instruction.getSplittedLine()[1], process);
-			ReadFile.readFile(fileName);
+			readFromFile(instruction.getSplittedLine()[1], process);
 		} else if (instruction.getSplittedLine()[0].equals("printFromTo")) {
-			int valuea = (int) getVarible(instruction.getSplittedLine()[1], process);
-			int valueb = (int) getVarible(instruction.getSplittedLine()[2], process);
-			printrange(valuea, valueb);
+			printrange(instruction.getSplittedLine(), process);
 		} else if (instruction.getSplittedLine()[0].equals("semWait")) {
 			String resource = (String) getVarible(instruction.getSplittedLine()[1], process);
 			Mutex.getInstance().semWait(Resource.valueOf(resource), process);
@@ -60,7 +54,24 @@ public class interpreter {
 		}
 	}
 
-	private static void printrange(int valuea, int valueb) {
+	private static void printing(String toPrint) {
+		Print.print(toPrint);
+	}
+
+	private static void writeToFile(String[] line, Process process) throws IOException {
+		String fileName = (String) getVarible(line[1], process);
+		String value = (String) getVarible(line[2], process);
+		WriteFile.writeFile(value, fileName);
+	}
+
+	private static void readFromFile(String line, Process process) throws IOException {
+		String fileName = (String) getVarible(line, process);
+		ReadFile.readFile(fileName);
+	}
+
+	private static void printrange(String[] lines, Process process) {
+		int valuea = (int) getVarible(lines[1], process);
+		int valueb = (int) getVarible(lines[2], process);
 		while (valuea <= valueb) {
 			Print.print(valuea + "");
 			valuea++;
@@ -106,6 +117,5 @@ public class interpreter {
 	public Memory getMemory() {
 		return memory;
 	}
-
 
 }
