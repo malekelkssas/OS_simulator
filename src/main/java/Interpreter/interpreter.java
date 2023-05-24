@@ -33,8 +33,7 @@ public class interpreter {
 		int pc = process.getPC();
 		process.inccrPC();
 		UnParsedLine instruction = process.getUnParsedLines().get(pc);
-		System.out.println("Currently executing process: " + process.toString());
-		System.out.println("Currently executing instruction: " + instruction);
+		thePrints(instruction, process);
 		if (instruction.getSplittedLine()[0].equals("print")) {
 			printing(instruction.getSplittedLine()[1]);
 		} else if (instruction.getSplittedLine()[0].equals("assign")) {
@@ -46,14 +45,27 @@ public class interpreter {
 		} else if (instruction.getSplittedLine()[0].equals("printFromTo")) {
 			printrange(instruction.getSplittedLine(), process);
 		} else if (instruction.getSplittedLine()[0].equals("semWait")) {
-			String resource = (String) getVarible(instruction.getSplittedLine()[1], process);
-			Mutex.getInstance().semWait(Resource.valueOf(resource), process);
+			semWait(instruction.getSplittedLine()[1], process);
 		} else if (instruction.getSplittedLine()[0].equals("semSignal")) {
-			String resource = (String) getVarible(instruction.getSplittedLine()[1], process);
-			Mutex.getInstance().semSignal(Resource.valueOf(resource), process);
+			semSignal(instruction.getSplittedLine()[1], process);
 		}
 	}
+	
+	private static void thePrints(UnParsedLine instruction, Process process) {
+		System.out.println("Currently executing process: " + process.toString());
+		System.out.println("Currently executing instruction: " + instruction);
+	}
 
+	private static void semWait(String line, Process process) {
+		String resource = (String) getVarible(line, process);
+		Mutex.getInstance().semWait(Resource.valueOf(resource), process);
+	}
+	
+	private static void semSignal(String line, Process process) {
+		String resource = (String) getVarible(line, process);
+		Mutex.getInstance().semSignal(Resource.valueOf(resource), process);
+	}
+	
 	private static void printing(String toPrint) {
 		Print.print(toPrint);
 	}
