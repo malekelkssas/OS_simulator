@@ -14,7 +14,7 @@ import storage.Process;
 import mutexes.Resource;
 
 public class Interpreter {
-	private Interpreter instance;
+	private static Interpreter instance;
 	private Memory memory;
 	private static int processid;
 
@@ -24,7 +24,7 @@ public class Interpreter {
 		Mutex metux = Mutex.getInstance();
 	}
 
-	public Interpreter getInstance() {
+	public static Interpreter getInstance() {
 		if (instance == null) {
 			instance = new Interpreter();
 		}

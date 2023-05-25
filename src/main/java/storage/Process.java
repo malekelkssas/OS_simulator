@@ -92,4 +92,12 @@ public class Process implements Serializable {
 
 	}
 
+	@Override
+	public String toString() {
+		return "Process{" +
+				"pcb=" + pcb +
+				", unParsedLines=" + unParsedLines +
+				", variables=" + variables +
+				'}';
+	}
 }

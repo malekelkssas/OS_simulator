@@ -10,10 +10,7 @@ import storage.State;
 import storage.UnParsedLine;
 import storage.Variable;
 import storage.Process;
-
-import java.util.Arrays;
 import java.util.Vector;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -29,7 +26,7 @@ public class MemoryTest {
 
     @Test
     void testAllocate_twoNormalProcess_memorySize() throws OSSimulatoeException {
-        // Given 2 Processes and one resource
+        // Given 2 Processes
         Vector<UnParsedLine> unParsedLines = new Vector<>();
         Vector<Variable> variables = new Vector<>();
         for (int i=0;i!=10;i++){
@@ -51,7 +48,7 @@ public class MemoryTest {
 
     @Test
     void testAllocate_oneNormalProcess_memorySize() throws OSSimulatoeException {
-        // Given 2 Processes and one resource
+        // Given 1 Process
         Vector<UnParsedLine> unParsedLines = new Vector<>();
         Vector<Variable> variables = new Vector<>();
         for (int i=0;i!=10;i++){
@@ -69,7 +66,7 @@ public class MemoryTest {
 
     @Test
     void testAllocate_Processes_EqualMemorySize() throws OSSimulatoeException {
-        // Given 2 Processes and one resource
+        // Given 2 Processes
         Vector<UnParsedLine> unParsedLines = new Vector<>();
         Vector<Variable> variables = new Vector<>();
         for (int i=0;i!=10;i++){
@@ -91,7 +88,7 @@ public class MemoryTest {
 
     @Test
     void testMemorySize_byAllocateTwoProcesses_MoreThanMemorySize() throws OSSimulatoeException {
-        // Given 2 Processes and one resource
+        // Given 2 Processes the first one in READY state
         Vector<UnParsedLine> unParsedLines1 = new Vector<>();
         Vector<Variable> variables = new Vector<>();
         for (int i=0;i!=10;i++){
@@ -117,7 +114,7 @@ public class MemoryTest {
 
     @Test
     void testMemorySize_byAllocateThreeProcesses_theThirdReplaceTheSecond() throws OSSimulatoeException {
-        // Given 2 Processes and one resource
+        // Given e Processes the second one in Ready state
         Vector<UnParsedLine> unParsedLines = new Vector<>();
         Vector<Variable> variables = new Vector<>();
         for (int i=0;i!=10;i++){
@@ -133,7 +130,7 @@ public class MemoryTest {
         variables.add(new Variable());
         Process p3 = new Process(3, unParsedLines, variables);
 
-        // when both of them allocate in the memory
+        // when allocate them in the memory
         memory.allocate(p1);
         memory.allocate(p2);
         memory.allocate(p3);
@@ -145,7 +142,7 @@ public class MemoryTest {
 
     @Test
     void testMemorySize_byAllocateThreeProcesses_theThirdReplaceTheFirst() throws OSSimulatoeException {
-        // Given 2 Processes and one resource
+        // Given 3 Processes and the first one in Ready state
         Vector<UnParsedLine> unParsedLines = new Vector<>();
         Vector<Variable> variables = new Vector<>();
         for (int i=0;i!=10;i++){
@@ -161,7 +158,7 @@ public class MemoryTest {
         variables.add(new Variable());
         Process p3 = new Process(3, unParsedLines, variables);
 
-        // when both of them allocate in the memory
+        // when allocate them in the memory
         memory.allocate(p1);
         memory.allocate(p2);
         memory.allocate(p3);
@@ -173,7 +170,7 @@ public class MemoryTest {
 
     @Test
     void testProcessesID_byAllocateThreeProcesses_theThirdReplaceTheSecond() throws OSSimulatoeException {
-        // Given 2 Processes and one resource
+        // Given e Processes and the second one in Ready state
         Vector<UnParsedLine> unParsedLines = new Vector<>();
         Vector<Variable> variables = new Vector<>();
         for (int i=0;i!=10;i++){
@@ -189,7 +186,7 @@ public class MemoryTest {
         variables.add(new Variable());
         Process p3 = new Process(3, unParsedLines, variables);
 
-        // when both of them allocate in the memory
+        // when allocate them in the memory
         memory.allocate(p1);
         memory.allocate(p2);
         memory.allocate(p3);
@@ -201,7 +198,7 @@ public class MemoryTest {
 
     @Test
     void testProcessesID_byAllocateThreeProcesses_theThirdReplaceTheFirst() throws OSSimulatoeException {
-        // Given 2 Processes and one resource
+        // Given 3 Processes and the first one in Ready state
         Vector<UnParsedLine> unParsedLines = new Vector<>();
         Vector<Variable> variables = new Vector<>();
         for (int i=0;i!=10;i++){
@@ -217,7 +214,7 @@ public class MemoryTest {
         variables.add(new Variable());
         Process p3 = new Process(3, unParsedLines, variables);
 
-        // when both of them allocate in the memory
+        // when allocate them in the memory
         memory.allocate(p1);
         memory.allocate(p2);
         memory.allocate(p3);
@@ -229,7 +226,7 @@ public class MemoryTest {
 
     @Test
     void CheckProcessID_FromProcess_from_Memory() throws OSSimulatoeException {
-        // Given 2 Processes and one resource
+        // Given 1 Process
         Vector<UnParsedLine> unParsedLines = new Vector<>();
         Vector<Variable> variables = new Vector<>();
         for (int i=0;i!=10;i++){
@@ -240,7 +237,7 @@ public class MemoryTest {
         }
         Process p1 = new Process(1, unParsedLines, variables);
 
-        // when both of them allocate in the memory
+        // when allocate it in the memory
         memory.allocate(p1);
 
         //then
@@ -249,7 +246,7 @@ public class MemoryTest {
 
     @Test
     void CheckUnValidProcessID_FromProcess_from_Memory() throws OSSimulatoeException {
-        // Given 2 Processes and one resource
+        // Given 1 Process
         Vector<UnParsedLine> unParsedLines = new Vector<>();
         Vector<Variable> variables = new Vector<>();
         for (int i=0;i!=10;i++){
@@ -260,7 +257,7 @@ public class MemoryTest {
         }
         Process p1 = new Process(1, unParsedLines, variables);
 
-        // when both of them allocate in the memory
+        // when allocate it in the memory
         memory.allocate(p1);
 
         //then
@@ -272,7 +269,7 @@ public class MemoryTest {
 
     @Test
     void UpdateProcesses_PCAttribute() throws OSSimulatoeException {
-        // Given 2 Processes and one resource
+        // Given 1 Process
         Vector<UnParsedLine> unParsedLines = new Vector<>();
         Vector<Variable> variables = new Vector<>();
         for (int i=0;i!=10;i++){
@@ -283,7 +280,7 @@ public class MemoryTest {
         }
         Process p1 = new Process(1, unParsedLines, variables);
 
-        // when both of them allocate in the memory
+        // when allocate it and update it in the memory
         memory.allocate(p1);
         p1 = memory.getProcess(p1.getID());
         p1.getVariables().get(0).setName("malek");

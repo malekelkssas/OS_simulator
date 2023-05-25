@@ -11,7 +11,7 @@ public class FileController {
         String path = new String(getPath(id));
         File file = new File(path);
         if (file.exists()) {
-            boolean deleted = file.delete();
+             file.delete();
         }
     }
 
