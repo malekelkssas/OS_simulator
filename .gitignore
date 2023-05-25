@@ -88,5 +88,5 @@ src/main/java/interpreter/Interpreter.java
 src/main/java/interpreter/Interpreter.java
 src/main/java/interpreter/Interpreter.java
 
-/src/main/processes/*
-!/src/main/processes/README.md
+/processes/*
+!/processes/README.md

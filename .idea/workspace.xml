@@ -6,11 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="d217f77a-0974-4090-943b-2889f189d063" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interpreter/CodeParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interpreter/CodeParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interpreter/Interpreter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interpreter/Interpreter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/memory/Memory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/memory/Memory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/scheduler/Scheduler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/scheduler/Scheduler.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
