@@ -32,6 +32,7 @@ public class Interpreter {
 	}
 
 	public static void executeInstruction(Process process) throws IOException, OSSimulatoeException {
+		System.out.println("Process pc in executeInstruction:" + process.getPC());
 		process = ReadMemory.readProcess(process.getID());
 		System.out.println("executing process"+ process.getID());
 		process.getPcb().setState(State.EXECUTE);
@@ -72,8 +73,7 @@ public class Interpreter {
 	}
 
 	private static void semWait(String line, Process process) {
-		String resource = (String) getVarible(line, process);
-		Mutex.getInstance().semWait(Resource.valueOf(resource), process);
+		Mutex.getInstance().semWait(Resource.valueOf(line), process);
 	}
 
 	private static void semSignal(String line, Process process) {

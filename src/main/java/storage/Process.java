@@ -78,6 +78,7 @@ public class Process implements Serializable {
 
 	public void inccrPC() {
 		pcb.setPc(pcb.getPc() + 1);
+		this.setPC(this.getPC() + 1);
 	}
 
 	public MemoryBoundry getMemoryBoundry() {
