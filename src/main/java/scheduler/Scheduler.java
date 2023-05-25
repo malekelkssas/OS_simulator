@@ -1,8 +1,8 @@
 package scheduler;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.Queue;
-
 import exceptions.OSSimulatoeException;
 import interpreter.Interpreter;
 import storage.Process;
@@ -15,7 +15,8 @@ public class Scheduler {
 	private int timeSlice;
 
 	private Scheduler() {
-
+		this.blockedQueue = new LinkedList<>();
+		this.readyQueue = new LinkedList<>();
 	}
 
 	public static Scheduler getInstance() {
@@ -32,7 +33,7 @@ public class Scheduler {
 	public void addToReadyQueue(Process process) {
 		this.readyQueue.add(process);
 	}
-	
+
 	public void addToBlockedQueue(Process process) {
 		this.blockedQueue.add(process);
 	}
