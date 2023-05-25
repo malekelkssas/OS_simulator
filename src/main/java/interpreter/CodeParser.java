@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import exceptions.OSSimulatoeException;
+import scheduler.Scheduler;
 import storage.Process;
 
 public class CodeParser {
@@ -20,9 +23,11 @@ public class CodeParser {
 		return fileLines;
 	}
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, OSSimulatoeException {
 		Process p1 = Interpreter.getProcessReady(readFile("Program_1.txt"));
-		
+		Scheduler.getInstance().addToReadyQueue(p1);
+		Scheduler.getInstance().setTimeSlice(2);
+		Scheduler.getInstance().run();
 	}
 
 }

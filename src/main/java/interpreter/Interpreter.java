@@ -32,6 +32,10 @@ public class Interpreter {
 	}
 
 	public static void executeInstruction(Process process) throws IOException, OSSimulatoeException {
+		process = ReadMemory.readProcess(process.getID());
+		System.out.println("executing process"+ process.getID());
+		process.getPcb().setState(State.EXECUTE);
+		WriteMemory.updateProcess(process);
 		int pc = process.getPC();
 		if (pc < process.getUnParsedLines().size()) {
 			UnParsedLine instruction = process.getUnParsedLines().get(pc);
@@ -142,7 +146,7 @@ public class Interpreter {
 		return memory;
 	}
 
-	public static Process getProcessReady(ArrayList<String> lines) {
+	public static Process getProcessReady(ArrayList<String> lines) throws OSSimulatoeException {
 		Vector<UnParsedLine> unParsedLines = new Vector<UnParsedLine>();
 		Vector<Variable> variblesToAdd = new Vector<Variable>();
 		HashSet<String> varibles = new HashSet<String>();
@@ -153,7 +157,9 @@ public class Interpreter {
 		for (String var : varibles) {
 			variblesToAdd.add(new Variable(var, null));
 		}
-		return new Process(++processid, unParsedLines, variblesToAdd);
+		Process process = new Process(++processid, unParsedLines, variblesToAdd);
+		WriteMemory.writeProcess(process);
+		return process;
 	}
 
 	private static HashSet<String> checkVarible(String line) {

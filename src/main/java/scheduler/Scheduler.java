@@ -7,6 +7,7 @@ import exceptions.OSSimulatoeException;
 import interpreter.Interpreter;
 import storage.Process;
 import storage.State;
+import systemcalls.WriteMemory;
 
 public class Scheduler {
 	private static Scheduler instance = null;
@@ -62,7 +63,6 @@ public class Scheduler {
 		while (this.hasProcess()) {
 			Process process = this.getNextProcess();
 			int remTime = timeSlice;
-			process.getPcb().setState(State.EXECUTE);
 			while (remTime-- > 0) {
 				Interpreter.executeInstruction(process);
 				if (process.getPcb().getState().equals(State.BLOCKED)
