@@ -7,7 +7,7 @@
     <list default="true" id="d465c97a-ed9a-425d-b82f-4b2ccc794083" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/interpreter/Interpreter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interpreter/Interpreter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/storage/UnParsedLine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/storage/UnParsedLine.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/storage/Process.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/storage/Process.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

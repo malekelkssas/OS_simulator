@@ -32,6 +32,7 @@ public class Interpreter {
 	}
 
 	public static void executeInstruction(Process process) throws IOException, OSSimulatoeException {
+		System.out.println("Process pc in executeInstruction:" + process.getPC());
 		process = ReadMemory.readProcess(process.getID());
 		System.out.println("executing process"+ process.getID());
 		process.getPcb().setState(State.EXECUTE);
