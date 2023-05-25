@@ -5,14 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d217f77a-0974-4090-943b-2889f189d063" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/processes/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/checkstyle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/checkstyle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/interpreter/CodeParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interpreter/CodeParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interpreter/Interpreter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interpreter/Interpreter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/memory/Memory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/memory/Memory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/scheduler/Scheduler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/scheduler/Scheduler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/storage/Process.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/storage/Process.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,6 +30,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
     "run.code.analysis.last.selected.profile": "pProject Default"
   }
 }]]></component>
@@ -68,5 +65,9 @@
   </component>
   <component name="TaskManager">
     <servers />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>
