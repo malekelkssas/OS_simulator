@@ -1,6 +1,7 @@
 package mutexes;
 
 import java.util.Queue;
+import scheduler.Scheduler;
 import storage.Process;
 import storage.State;
 
@@ -18,6 +19,7 @@ public abstract class MutexBase implements Mutexable {
 			value = 0;
 		} else {
 			blockedQueue.add(process);
+			Scheduler.getInstance().addToBlockedQueue(process);
 			process.setState(State.BLOCKED);
 		}
 	}
@@ -34,12 +36,13 @@ public abstract class MutexBase implements Mutexable {
 			Process p = blockedQueue.remove();
 			p.setState(State.READY);
 			readyQueue.add(p);
+			Scheduler.getInstance().addToReadyQueue(p);
 			ownerID = p.getID();
 		}
 
 	}
 
-	private boolean isAvailable() {
+	public boolean isAvailable() {
 
 		return value == 1;
 	}
