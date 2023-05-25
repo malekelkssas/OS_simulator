@@ -63,13 +63,19 @@ public class Scheduler {
 		while (this.hasProcess()) {
 			Process process = this.getNextProcess();
 			int remTime = timeSlice;
-			while (remTime-- > 0) {
+			process.setState(State.READY);
+			while (remTime-- > 0 && !process.getState().equals(State.BLOCKED) && !process.getState().equals(State.FINISH)) {
 				process = Interpreter.executeInstruction(process);
+
 				if (process.getPcb().getState().equals(State.BLOCKED)
 						|| process.getPcb().getState().equals(State.FINISH)) {
 					Memory.getInstance().removeFinish();
 				}
+
+				System.out.println("---------_______________________________________________-------");
 			}
+
+			System.out.println("Process State in Scheduler run: " + process.getState());
 
 			if (!process.getPcb().getState().equals(State.BLOCKED)
 					&& !process.getPcb().getState().equals(State.FINISH)) {

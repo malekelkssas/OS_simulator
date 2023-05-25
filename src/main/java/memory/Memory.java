@@ -264,9 +264,7 @@ public class Memory {
             }
             startidx = getNextProcess(startidx);
         }
-        System.out.println(ans+" "+startidx);
         if (ans) {
-            System.out.println("in if cond"+startidx);
             return startidx;
         }
         return -1;

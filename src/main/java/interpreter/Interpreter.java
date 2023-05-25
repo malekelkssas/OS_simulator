@@ -35,14 +35,12 @@ public class Interpreter {
 		System.out.println("Process pc in executeInstruction: " + process.getPC());
 		System.out.println("executing process "+ process.getID());
 		process.setState(State.EXECUTE);
-		WriteMemory.updateProcess(process);
 		int pc = process.getPC();
 		if (pc < process.getUnParsedLines().size()) {
 			UnParsedLine instruction = process.getUnParsedLines().get(pc);
 			parse(process, instruction);
 		} else {
 			process.setState(State.FINISH);
-			WriteMemory.updateProcess(process);
 		}
 
 		process.inccrPC();
@@ -96,7 +94,6 @@ public class Interpreter {
 
 	private static void readFromFile(String line, Process process) throws IOException {
 		String fileName = (String) getVarible(line, process);
-		System.out.println(line+" "+fileName);
 		ReadFile.readFile(fileName);
 	}
 
