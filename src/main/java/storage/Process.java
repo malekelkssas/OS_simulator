@@ -77,7 +77,6 @@ public class Process implements Serializable {
 	}
 
 	public void inccrPC() {
-		pcb.setPc(pcb.getPc() + 1);
 		this.setPC(this.getPC() + 1);
 	}
 
@@ -93,4 +92,12 @@ public class Process implements Serializable {
 
 	}
 
+	@Override
+	public String toString() {
+		return "Process{" +
+				"pcb=" + pcb +
+				", unParsedLines=" + unParsedLines +
+				", variables=" + variables +
+				'}';
+	}
 }

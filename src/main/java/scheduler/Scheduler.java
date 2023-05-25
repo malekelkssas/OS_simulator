@@ -5,9 +5,9 @@ import java.util.LinkedList;
 import java.util.Queue;
 import exceptions.OSSimulatoeException;
 import interpreter.Interpreter;
+import memory.Memory;
 import storage.Process;
 import storage.State;
-import systemcalls.WriteMemory;
 
 public class Scheduler {
 	private static Scheduler instance = null;
@@ -64,15 +64,15 @@ public class Scheduler {
 			Process process = this.getNextProcess();
 			int remTime = timeSlice;
 			while (remTime-- > 0) {
-				Interpreter.executeInstruction(process);
+				process = Interpreter.executeInstruction(process);
 				if (process.getPcb().getState().equals(State.BLOCKED)
 						|| process.getPcb().getState().equals(State.FINISH)) {
-					break;
+					Memory.getInstance().removeFinish();
 				}
 			}
 
 			if (!process.getPcb().getState().equals(State.BLOCKED)
-					|| !process.getPcb().getState().equals(State.FINISH)) {
+					&& !process.getPcb().getState().equals(State.FINISH)) {
 				this.addToReadyQueue(process);
 			}
 		}
