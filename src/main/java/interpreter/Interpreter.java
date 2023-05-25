@@ -72,8 +72,7 @@ public class Interpreter {
 	}
 
 	private static void semWait(String line, Process process) {
-		String resource = (String) getVarible(line, process);
-		Mutex.getInstance().semWait(Resource.valueOf(resource), process);
+		Mutex.getInstance().semWait(Resource.valueOf(line), process);
 	}
 
 	private static void semSignal(String line, Process process) {
