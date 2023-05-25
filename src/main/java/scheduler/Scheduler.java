@@ -3,6 +3,7 @@ package scheduler;
 import java.io.IOException;
 import java.util.Queue;
 
+import exceptions.OSSimulatoeException;
 import interpreter.Interpreter;
 import storage.Process;
 import storage.State;
@@ -56,13 +57,13 @@ public class Scheduler {
 		this.timeSlice = timeSlice;
 	}
 
-	public void run() throws IOException {
+	public void run() throws IOException, OSSimulatoeException {
 		while (this.hasProcess()) {
 			Process process = this.getNextProcess();
 			int remTime = timeSlice;
 			process.getPcb().setState(State.EXECUTE);
 			while (remTime-- > 0) {
-				Interpreter.read(process);
+				Interpreter.executeInstruction(process);
 				if (process.getPcb().getState().equals(State.BLOCKED)
 						|| process.getPcb().getState().equals(State.FINISH)) {
 					break;
