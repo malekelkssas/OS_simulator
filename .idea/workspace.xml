@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d465c97a-ed9a-425d-b82f-4b2ccc794083" name="Changes" comment="" />
+    <list default="true" id="bb92dfe3-9b73-4480-94e0-8659db38980d" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/memory/Memory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/memory/Memory.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -53,7 +56,7 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="d465c97a-ed9a-425d-b82f-4b2ccc794083" name="Changes" comment="" />
+      <changelist id="bb92dfe3-9b73-4480-94e0-8659db38980d" name="Changes" comment="" />
       <created>1684609909201</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
