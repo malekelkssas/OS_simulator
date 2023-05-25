@@ -67,9 +67,9 @@ public class Memory {
             tmpPointer = getNextProcess(tmpPointer);
         }
         if (memory[tmpPointer] != null && (int) memory[tmpPointer] == process.getID()) {
-            tmpPointer = setPCB(tmpPointer, process);
-            tmpPointer = setUnparsedLine(tmpPointer, process);
-            setVariable(tmpPointer, process);
+            tmpPointer = updatePCB(tmpPointer, process);
+            tmpPointer = updateUnparsedLine(tmpPointer, process);
+            updateVariable(tmpPointer, process);
         } else {
             try {
                 Process process2 = Serializer.deserializeProcess(process.getID());
@@ -79,6 +79,37 @@ public class Memory {
                 throw new NoSuchProcessException(e.getMessage());
             }
         }
+    }
+
+    private void updateVariable(int startidx, Process process) {
+        Vector<Variable> arr = process.getVariables();
+        int idx = 0;
+        while (memory[startidx] instanceof Variable) {
+            memory[startidx] = arr.get(idx++);
+            startidx = nextPointer(startidx);
+        }
+    }
+
+    private int updateUnparsedLine(int startidx, Process process) {
+        Vector<UnParsedLine> arr = process.getUnParsedLines();
+        int idx = 0;
+        while (memory[startidx] instanceof UnParsedLine){
+            memory[startidx] = arr.get(idx++);
+            startidx = nextPointer(startidx);
+        }
+        return startidx;
+    }
+
+    private int updatePCB(int startidx, Process process) {
+        memory[startidx] = process.getID();
+        startidx = nextPointer(startidx);
+        memory[startidx] = process.getMemoryBoundry();
+        startidx = nextPointer(startidx);
+        memory[startidx] = process.getState();
+        startidx = nextPointer(startidx);
+        memory[startidx] = process.getPC();
+        startidx = nextPointer(startidx);
+        return startidx;
     }
 
 
