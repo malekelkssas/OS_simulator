@@ -6,8 +6,6 @@ import util.Serializer;
 import storage.*;
 import constants.Constants;
 import storage.Process;
-
-import java.util.Arrays;
 import java.util.Vector;
 
 public class Memory {
@@ -69,7 +67,7 @@ public class Memory {
     }
 
     public void updateProcess(Process tmpprocess) throws NoSuchProcessException {
-        Process process = new Process(tmpprocess.getPcb(),tmpprocess.getUnParsedLines(),tmpprocess.getVariables());
+        Process process = new Process(tmpprocess.getPcb(), tmpprocess.getUnParsedLines(), tmpprocess.getVariables());
         int tmpPointer = start;
         int nProcess = nProcesses;
         boolean ans = false;
@@ -147,14 +145,14 @@ public class Memory {
 
 
     public void allocate(Process tmpprocess) throws OSSimulatoeException {
-        Process process = new Process(tmpprocess.getPcb(),tmpprocess.getUnParsedLines(), tmpprocess.getVariables());
+        Process process = new Process(tmpprocess.getPcb(), tmpprocess.getUnParsedLines(), tmpprocess.getVariables());
         int processSize = process.getsize();
         boolean ans = false;
         while (processSize > getEmptyLocation()) {
             swap();
             ans = true;
         }
-        if(ans) {
+        if (ans) {
             System.out.println("          process " + process.getID() + " entered the memory");
             System.out.println();
         }
@@ -473,14 +471,14 @@ public class Memory {
         int nprocess = nProcesses;
         int tmpPointer = start;
         System.out.println("Memory:   ");
-        if(nprocess-- > 0 && memory[tmpPointer] != null){
-            Process process = getProcess((int)memory[tmpPointer]);
+        if (nprocess-- > 0 && memory[tmpPointer] != null){
+            Process process = getProcess((int) memory[tmpPointer]);
             System.out.println("          "+process);
         }
         System.out.println();
         while (nprocess-- > 0) {
             tmpPointer = getNextProcess(tmpPointer);
-            Process process = getProcess((int)memory[tmpPointer]);
+            Process process = getProcess((int) memory[tmpPointer]);
             System.out.println("          "+process);
             System.out.println();
         }

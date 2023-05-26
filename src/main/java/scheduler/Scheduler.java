@@ -95,14 +95,13 @@ public class Scheduler {
 			System.out.println("current clock cycle: "+ clockCycles);
 			process = Interpreter.executeInstruction(process);
 			updateClockCycles();
-
 			updateReadyQueue();
 			Memory.getInstance().print();
 		}
 		if (!process.getPcb().getState().equals(State.BLOCKED)
 				&& !process.getPcb().getState().equals(State.FINISH)) {
 			this.addToReadyQueue(process);
-		} else{
+		} else {
 			System.out.println("event happen: "+process.getState());
 			System.out.println("     Ready Queue:          \n          "+this.readyQueue);
 			System.out.println("     Block Queue:          \n          "+this.blockedQueue);
