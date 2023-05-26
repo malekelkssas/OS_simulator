@@ -35,6 +35,7 @@ public class Memory {
     }
 
     public Process getProcess(int id) throws NoSuchProcessException {
+        print();
         int tmpPointer = start;
         int nProcess = nProcesses;
         boolean ans = false;
@@ -206,7 +207,9 @@ public class Memory {
         int nProcess = nProcesses;
         while (nProcess-- > 0){
             int processSize = ((MemoryBoundry) memory[nextPointer(tmpPointer)]).getsize();
-            ((MemoryBoundry) memory[nextPointer(tmpPointer)]).setStart(tmpPointer);
+            MemoryBoundry boundry = (MemoryBoundry) memory[nextPointer(tmpPointer)];
+            boundry.setStart(tmpPointer);
+            memory[nextPointer(tmpPointer)] = boundry;
             int tmp = tmpPointer;
             tmp = skipPCB(tmp);
             tmp = skipUnparsedLines(tmp);

@@ -73,9 +73,9 @@ public class Scheduler {
 	}
 
 	public void updateReadyQueue() {
-		for(int i=0;i<arrivingProcesses.size();i++) {
+		for (int i=0; i<arrivingProcesses.size(); i++) {
 			Process p = arrivingProcesses.get(i);
-			if(p.isArrived(this.clockCycles)) {
+			if (p.isArrived(this.clockCycles)) {
 				arrivingProcesses.remove(p);
 				this.addToReadyQueue(p);
 			}
@@ -105,14 +105,13 @@ public class Scheduler {
 				&& !process.getPcb().getState().equals(State.FINISH)) {
 			this.addToReadyQueue(process);
 		}
-
 	}
 
 	public void controlProcesses() throws OSSimulatoeException, IOException {
-		while(!arrivingProcesses.isEmpty()) {
+		while (!arrivingProcesses.isEmpty()) {
 			this.updateClockCycles();
 			updateReadyQueue();
-			while(!readyQueue.isEmpty()) {
+			while (!readyQueue.isEmpty()) {
 				Process processToRun = this.getNextProcess();
 				this.run(processToRun);
 			}
