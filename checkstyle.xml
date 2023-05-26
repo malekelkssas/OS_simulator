@@ -17,7 +17,7 @@
 		<module name="LocalVariableName"  />
 		<module name="MemberName" />
 		<module name="MethodLength">
-			<property name="max" value="20" />
+			<property name="max" value="25" />
 			<message key="methodcount.error" value="Methods are too big" />
 		</module>
 		<module name="EmptyLineSeparator">

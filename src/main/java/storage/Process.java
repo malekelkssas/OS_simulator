@@ -11,10 +11,19 @@ public class Process implements Serializable {
 	private Vector<UnParsedLine> unParsedLines;
 	private Vector<Variable> variables;
 
+	private int arrivalTime;
+
 	public Process(int id, Vector<UnParsedLine> unParsedLines, Vector<Variable> variables) {
 		this.pcb = new PCB(id);
 		this.unParsedLines = (Vector<UnParsedLine>) unParsedLines.clone();
 		this.variables = (Vector<Variable>) variables.clone();
+	}
+
+	public Process(int id, Vector<UnParsedLine> unParsedLines, Vector<Variable> variables, int arrivalTime) {
+		this.pcb = new PCB(id);
+		this.unParsedLines = (Vector<UnParsedLine>) unParsedLines.clone();
+		this.variables = (Vector<Variable>) variables.clone();
+		this.arrivalTime = arrivalTime;
 	}
 
 	public Process(PCB pcb, Vector<UnParsedLine> unParsedLines, Vector<Variable> variables) {
@@ -76,8 +85,20 @@ public class Process implements Serializable {
 		this.variables = (Vector<Variable>) variables.clone();
 	}
 
+	public int getArrivalTime() {
+		return this.arrivalTime;
+	}
+
+	public void setArrivalTime(int arrivalTime) {
+		this.arrivalTime = arrivalTime;
+	}
+
+	public boolean isArrived(int currentTime) {
+		return this.arrivalTime == currentTime;
+	}
+
 	public void inccrPC() {
-		pcb.setPc(pcb.getPc() + 1);
+		this.setPC(this.getPC() + 1);
 	}
 
 	public MemoryBoundry getMemoryBoundry() {
@@ -92,4 +113,12 @@ public class Process implements Serializable {
 
 	}
 
+	@Override
+	public String toString() {
+		return "Process{" +
+				"pcb=" + pcb +
+				", unParsedLines=" + unParsedLines +
+				", variables=" + variables +
+				'}';
+	}
 }

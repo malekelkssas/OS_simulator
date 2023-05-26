@@ -6,6 +6,8 @@ import util.Serializer;
 import storage.*;
 import constants.Constants;
 import storage.Process;
+
+import java.util.Arrays;
 import java.util.Vector;
 
 public class Memory {
@@ -33,12 +35,18 @@ public class Memory {
     }
 
     public Process getProcess(int id) throws NoSuchProcessException {
+        print();
         int tmpPointer = start;
         int nProcess = nProcesses;
-        while (nProcess-- > 0 && (int) memory[tmpPointer] != id) {
+        boolean ans = false;
+        while (nProcess-- > 0) {
+            if ( (int) memory[tmpPointer] == id) {
+                ans = true;
+                break;
+            }
             tmpPointer = getNextProcess(tmpPointer);
         }
-        if (memory[tmpPointer] != null && (int) memory[tmpPointer] == id) {
+        if (ans) {
             PCB pcb = new PCB((int) memory[tmpPointer], (MemoryBoundry) memory[nextPointer(tmpPointer)],
                     (State) memory[nextPointer(nextPointer(tmpPointer))], (int) memory[nextPointer(nextPointer(nextPointer(tmpPointer)))]);
             tmpPointer = skipPCB(tmpPointer);
@@ -63,10 +71,15 @@ public class Memory {
     public void updateProcess(Process process) throws NoSuchProcessException {
         int tmpPointer = start;
         int nProcess = nProcesses;
-        while (nProcess-- > 0 && (int) memory[tmpPointer] != process.getID()) {
+        boolean ans = false;
+        while (nProcess-- > 0) {
+            if ((int) memory[tmpPointer] == process.getID()) {
+                ans = true;
+                break;
+            }
             tmpPointer = getNextProcess(tmpPointer);
         }
-        if (memory[tmpPointer] != null && (int) memory[tmpPointer] == process.getID()) {
+        if (ans) {
             tmpPointer = updatePCB(tmpPointer, process);
             tmpPointer = updateUnparsedLine(tmpPointer, process);
             updateVariable(tmpPointer, process);
@@ -172,8 +185,12 @@ public class Memory {
     }
 
     private void swap() throws OSSimulatoeException {
+        print();
         nProcesses--;
         int startidx = getReadyOrBlockecdProcess();
+        if (startidx == -1) {
+            startidx = getFirstNewProcess();
+        }
         int tmpPointer = startidx;
         Process process = new Process();
         startidx = setPCB(startidx, process);
@@ -188,9 +205,11 @@ public class Memory {
     private void resetMemoryBoundry() {
         int tmpPointer = start;
         int nProcess = nProcesses;
-        while (memory[tmpPointer] != null && nProcess-- > 0){
+        while (nProcess-- > 0){
             int processSize = ((MemoryBoundry) memory[nextPointer(tmpPointer)]).getsize();
-            ((MemoryBoundry) memory[nextPointer(tmpPointer)]).setStart(tmpPointer);
+            MemoryBoundry boundry = (MemoryBoundry) memory[nextPointer(tmpPointer)];
+            boundry.setStart(tmpPointer);
+            memory[nextPointer(tmpPointer)] = boundry;
             int tmp = tmpPointer;
             tmp = skipPCB(tmp);
             tmp = skipUnparsedLines(tmp);
@@ -237,12 +256,35 @@ public class Memory {
         }
     }
 
-    private int getReadyOrBlockecdProcess() {
+    private int getFirstNewProcess() {
         int startidx = start;
-        while ( !(getProcrssState(startidx).equals(State.READY) ^ getProcrssState(startidx).equals(State.BLOCKED))) {
+        int nprocess = nProcesses;
+        boolean ans = false;
+        while (nprocess-->=0) {
+            if (getProcrssState(startidx).equals(State.NEW)) {
+                ans = true;
+                break;
+            }
             startidx = getNextProcess(startidx);
         }
-        return startidx;
+        if (ans) {
+            return startidx;
+        }
+        return -1;
+    }
+
+    private int getReadyOrBlockecdProcess() {
+        int startidx = start;
+        int nprocess = nProcesses;
+        boolean ans = false;
+        while (nprocess-->=0) {
+            if ((getProcrssState(startidx).equals(State.READY) ^ getProcrssState(startidx).equals(State.BLOCKED))) {
+                ans = true;
+                break;
+            }
+            startidx = getNextProcess(startidx);
+        }
+        return ans?startidx:-1;
     }
 
     private int getNextProcess(int startidx) {
@@ -372,6 +414,37 @@ public class Memory {
         return start-1;
     }
 
+    public void removeFinish() throws OSSimulatoeException {
+        int startidx = getFinishProcess();
+        while (startidx !=-1) {
+            int tmpPointer = startidx;
+            Process process = new Process();
+            startidx = setPCB(startidx, process);
+            startidx = setUnparsedLine(startidx, process);
+            setVariable(startidx, process);
+            Serializer.serializeProcess(process);
+            setProcessesToNull(tmpPointer, process.getsize());
+            nProcesses--;
+            removeFragmantetion();
+            resetMemoryBoundry();
+            startidx = getFinishProcess();
+        }
+    }
+
+    private int getFinishProcess() {
+        int startidx = start;
+        int nprocess = nProcesses;
+        boolean ans = false;
+        while (nprocess-- > 0) {
+            if (getProcrssState(startidx).equals(State.FINISH)) {
+                ans = true;
+                break;
+            }
+            startidx = getNextProcess(startidx);
+        }
+        return ans ? startidx:-1;
+    }
+
     public String toSrting(){
         String ret = new String();
         int tmpPointer = start;
@@ -388,5 +461,9 @@ public class Memory {
         end = 0;
         nItems = 0;
         nProcesses = 0;
+    }
+
+    public void print(){
+        System.out.println(Arrays.toString(memory));
     }
 }

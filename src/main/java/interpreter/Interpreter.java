@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Vector;
-
 import exceptions.OSSimulatoeException;
 import memory.Memory;
 import mutexes.Mutex;
@@ -31,22 +30,28 @@ public class Interpreter {
 		return instance;
 	}
 
-	public static void executeInstruction(Process process) throws IOException, OSSimulatoeException {
+	public static Process executeInstruction(Process process) throws IOException, OSSimulatoeException {
+		process = ReadMemory.readProcess(process.getID());
+		System.out.println("Process pc in executeInstruction: " + process.getPC());
+		System.out.println("executing process "+ process.getID());
+		process.setState(State.EXECUTE);
 		int pc = process.getPC();
 		if (pc < process.getUnParsedLines().size()) {
 			UnParsedLine instruction = process.getUnParsedLines().get(pc);
 			parse(process, instruction);
 		} else {
 			process.setState(State.FINISH);
-			WriteMemory.updateProcess(process);
 		}
+
 		process.inccrPC();
+		WriteMemory.updateProcess(process);
+		return process;
 	}
 
 	public static void parse(Process process, UnParsedLine instruction) throws IOException, OSSimulatoeException {
 		thePrints(instruction, process);
 		if (instruction.getSplittedLine()[0].equals("print")) {
-			printing(instruction.getSplittedLine()[1]);
+			printing(instruction.getSplittedLine()[1], process);
 		} else if (instruction.getSplittedLine()[0].equals("assign")) {
 			prepareassign(instruction, process);
 		} else if (instruction.getSplittedLine()[0].equals("writeFile")) {
@@ -54,6 +59,7 @@ public class Interpreter {
 		} else if (instruction.getSplittedLine()[0].equals("readFile")) {
 			readFromFile(instruction.getSplittedLine()[1], process);
 		} else if (instruction.getSplittedLine()[0].equals("printFromTo")) {
+			//todo: here
 			printrange(instruction.getSplittedLine(), process);
 		} else if (instruction.getSplittedLine()[0].equals("semWait")) {
 			semWait(instruction.getSplittedLine()[1], process);
@@ -68,17 +74,16 @@ public class Interpreter {
 	}
 
 	private static void semWait(String line, Process process) {
-		String resource = (String) getVarible(line, process);
-		Mutex.getInstance().semWait(Resource.valueOf(resource), process);
+		Mutex.getInstance().semWait(Resource.valueOf(line), process);
 	}
 
 	private static void semSignal(String line, Process process) {
-		String resource = (String) getVarible(line, process);
-		Mutex.getInstance().semSignal(Resource.valueOf(resource), process);
+		Mutex.getInstance().semSignal(Resource.valueOf(line), process);
 	}
 
-	private static void printing(String toPrint) {
-		Print.print(toPrint);
+	private static void printing(String toPrint, Process process) {
+		String var = (String) getVarible(toPrint, process);
+		Print.print(var);
 	}
 
 	private static void writeToFile(String[] line, Process process) throws IOException {
@@ -93,8 +98,9 @@ public class Interpreter {
 	}
 
 	private static void printrange(String[] lines, Process process) {
-		int valuea = (int) getVarible(lines[1], process);
-		int valueb = (int) getVarible(lines[2], process);
+		//TODO: make sure from the integer
+		int valuea = Integer.parseInt((String) getVarible(lines[1], process));
+		int valueb = Integer.parseInt((String) getVarible(lines[2], process));
 		while (valuea <= valueb) {
 			Print.print(valuea + "");
 			valuea++;
@@ -142,7 +148,7 @@ public class Interpreter {
 		return memory;
 	}
 
-	public static Process getProcessReady(ArrayList<String> lines) {
+	public static Process getProcessReady(ArrayList<String> lines, int arrivalTime) throws OSSimulatoeException {
 		Vector<UnParsedLine> unParsedLines = new Vector<UnParsedLine>();
 		Vector<Variable> variblesToAdd = new Vector<Variable>();
 		HashSet<String> varibles = new HashSet<String>();
@@ -153,7 +159,9 @@ public class Interpreter {
 		for (String var : varibles) {
 			variblesToAdd.add(new Variable(var, null));
 		}
-		return new Process(++processid, unParsedLines, variblesToAdd);
+		Process process = new Process(++processid, unParsedLines, variblesToAdd, arrivalTime);
+		WriteMemory.writeProcess(process);
+		return process;
 	}
 
 	private static HashSet<String> checkVarible(String line) {
