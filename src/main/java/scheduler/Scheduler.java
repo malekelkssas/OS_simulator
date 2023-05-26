@@ -72,6 +72,16 @@ public class Scheduler {
 		this.clockCycles++;
 	}
 
+	public void updateReadyQueue() {
+		for(int i=0;i<arrivingProcesses.size();i++) {
+			Process p = arrivingProcesses.get(i);
+			if(p.isArrived(this.clockCycles)) {
+				arrivingProcesses.remove(p);
+				this.addToReadyQueue(p);
+			}
+		}
+	}
+
 	public void run(Process process) throws IOException, OSSimulatoeException {
 		int remTime = timeSlice;
 		process.setState(State.READY);
@@ -80,11 +90,12 @@ public class Scheduler {
 
 			if (process.getPcb().getState().equals(State.BLOCKED)
 					|| process.getPcb().getState().equals(State.FINISH)) {
-				// TODO: what is the process is only BLOCKED?
+				// TODO: what if the process is only BLOCKED?
 				Memory.getInstance().removeFinish();
 			}
 
 			updateClockCycles();
+			updateReadyQueue();
 			System.out.println("---------_______________________________________________-------");
 		}
 
@@ -100,16 +111,9 @@ public class Scheduler {
 	public void controlProcesses() throws OSSimulatoeException, IOException {
 		while(!arrivingProcesses.isEmpty()) {
 			this.updateClockCycles();
-			for(int i=0;i<arrivingProcesses.size();i++) {
-				Process p = arrivingProcesses.get(i);
-				if(p.isArrived(this.clockCycles)) {
-					arrivingProcesses.remove(p);
-					this.addToReadyQueue(p);
-				}
-			}
-
+			updateReadyQueue();
 			while(!readyQueue.isEmpty()) {
-				Process processToRun = readyQueue.poll();
+				Process processToRun = this.getNextProcess();
 				this.run(processToRun);
 			}
 

@@ -5,12 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d217f77a-0974-4090-943b-2889f189d063" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/processes/1.ser" beforeDir="false" afterPath="$PROJECT_DIR$/processes/1.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/processes/2.ser" beforeDir="false" afterPath="$PROJECT_DIR$/processes/2.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interpreter/CodeParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interpreter/CodeParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interpreter/Interpreter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interpreter/Interpreter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/scheduler/Scheduler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/scheduler/Scheduler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/storage/Process.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/storage/Process.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
