@@ -1,5 +1,6 @@
 package mutexes;
 
+import exceptions.NoSuchProcessException;
 import storage.Process;
 
 public class Mutex {
@@ -22,7 +23,7 @@ public class Mutex {
 		check.semWait(process);
 	}
 
-	public void semSignal(Resource resource, Process process) {
+	public void semSignal(Resource resource, Process process) throws NoSuchProcessException {
 
 		Mutexable check = getSubclassInstance(resource);
 		check.semSignal(process);

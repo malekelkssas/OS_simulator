@@ -1,6 +1,8 @@
 package mutexes;
 
 import java.util.Queue;
+
+import exceptions.NoSuchProcessException;
 import scheduler.Scheduler;
 import storage.Process;
 import storage.State;
@@ -25,7 +27,7 @@ public abstract class MutexBase implements Mutexable {
 	}
 
 	@Override
-	public void semSignal(Process process) {
+	public void semSignal(Process process) throws NoSuchProcessException {
 
 		if (ownerID != process.getID())
 			return;

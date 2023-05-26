@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Vector;
+
+import exceptions.NoSuchProcessException;
 import exceptions.OSSimulatoeException;
 import memory.Memory;
 import mutexes.Mutex;
@@ -33,7 +35,6 @@ public class Interpreter {
 	public static Process executeInstruction(Process process) throws IOException, OSSimulatoeException {
 		process = ReadMemory.readProcess(process.getID());
 		System.out.println("Process pc in executeInstruction: " + process.getPC());
-		System.out.println("executing process "+ process.getID());
 		process.setState(State.EXECUTE);
 		int pc = process.getPC();
 		if (pc < process.getUnParsedLines().size()) {
@@ -69,20 +70,22 @@ public class Interpreter {
 	}
 
 	private static void thePrints(UnParsedLine instruction, Process process) {
-		System.out.println("Currently executing process: " + process.toString());
+//		System.out.println("Currently executing process: " + process.toString());
 		System.out.println("Currently executing instruction: " + instruction);
+		System.out.println();
 	}
 
 	private static void semWait(String line, Process process) {
 		Mutex.getInstance().semWait(Resource.valueOf(line), process);
 	}
 
-	private static void semSignal(String line, Process process) {
+	private static void semSignal(String line, Process process) throws NoSuchProcessException {
 		Mutex.getInstance().semSignal(Resource.valueOf(line), process);
 	}
 
 	private static void printing(String toPrint, Process process) {
 		String var = (String) getVarible(toPrint, process);
+		var = "the output is : " + var;
 		Print.print(var);
 	}
 
@@ -98,11 +101,11 @@ public class Interpreter {
 	}
 
 	private static void printrange(String[] lines, Process process) {
-		//TODO: make sure from the integer
 		int valuea = Integer.parseInt((String) getVarible(lines[1], process));
 		int valueb = Integer.parseInt((String) getVarible(lines[2], process));
+		System.out.println("the range: \n");
 		while (valuea <= valueb) {
-			Print.print(valuea + "");
+			Print.print("           "+valuea + "");
 			valuea++;
 		}
 	}
@@ -112,8 +115,10 @@ public class Interpreter {
 		Object valueb = null;
 		String operation = instruction.getSplittedLine()[2];
 		if (operation.equals("input")) {
+			System.out.println("input: ");
 			valueb = Input.readInput();
 		} else if (operation.equals("readFile")) {
+			System.out.println("file name: ");
 			String fileName = (String) getVarible(instruction.getSplittedLine()[3], process);
 			valueb = ReadFile.readFile(fileName);
 		} else {
@@ -148,7 +153,7 @@ public class Interpreter {
 		return memory;
 	}
 
-	public static Process getProcessReady(ArrayList<String> lines, int arrivalTime) throws OSSimulatoeException {
+	public static Process getProcessReady(ArrayList<String> lines) throws OSSimulatoeException {
 		Vector<UnParsedLine> unParsedLines = new Vector<UnParsedLine>();
 		Vector<Variable> variblesToAdd = new Vector<Variable>();
 		HashSet<String> varibles = new HashSet<String>();
@@ -159,7 +164,7 @@ public class Interpreter {
 		for (String var : varibles) {
 			variblesToAdd.add(new Variable(var, null));
 		}
-		Process process = new Process(++processid, unParsedLines, variblesToAdd, arrivalTime);
+		Process process = new Process(++processid, unParsedLines, variblesToAdd);
 		WriteMemory.writeProcess(process);
 		return process;
 	}

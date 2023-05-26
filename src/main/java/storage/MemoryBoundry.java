@@ -10,6 +10,8 @@ public class MemoryBoundry extends Storable implements Serializable{
         this.start = start;
         this.end = end;
     }
+    public MemoryBoundry(){
+    }
 
     public int getEnd() {
         return end;

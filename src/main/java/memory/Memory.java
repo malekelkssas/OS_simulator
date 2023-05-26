@@ -35,7 +35,6 @@ public class Memory {
     }
 
     public Process getProcess(int id) throws NoSuchProcessException {
-        print();
         int tmpPointer = start;
         int nProcess = nProcesses;
         boolean ans = false;
@@ -55,6 +54,7 @@ public class Memory {
             Vector<Variable> variables = getProcessVariable(tmpPointer);
             return new Process(pcb, unParsedLines, variables);
         }
+
         return deserializeProcesses(id);
     }
 
@@ -68,7 +68,8 @@ public class Memory {
         }
     }
 
-    public void updateProcess(Process process) throws NoSuchProcessException {
+    public void updateProcess(Process tmpprocess) throws NoSuchProcessException {
+        Process process = new Process(tmpprocess.getPcb(),tmpprocess.getUnParsedLines(),tmpprocess.getVariables());
         int tmpPointer = start;
         int nProcess = nProcesses;
         boolean ans = false;
@@ -87,7 +88,7 @@ public class Memory {
             try {
                 Process process2 = Serializer.deserializeProcess(process.getID());
                 allocate(process2);
-                updateProcess(process2);
+                updateProcess(process);
             } catch (OSSimulatoeException e) {
                 throw new NoSuchProcessException(e.getMessage());
             }
@@ -116,7 +117,7 @@ public class Memory {
     private int updatePCB(int startidx, Process process) {
         memory[startidx] = process.getID();
         startidx = nextPointer(startidx);
-        memory[startidx] = process.getMemoryBoundry();
+//        memory[startidx] = process.getMemoryBoundry();
         startidx = nextPointer(startidx);
         memory[startidx] = process.getState();
         startidx = nextPointer(startidx);
@@ -145,10 +146,17 @@ public class Memory {
     }
 
 
-    public void allocate(Process process) throws OSSimulatoeException {
+    public void allocate(Process tmpprocess) throws OSSimulatoeException {
+        Process process = new Process(tmpprocess.getPcb(),tmpprocess.getUnParsedLines(), tmpprocess.getVariables());
         int processSize = process.getsize();
+        boolean ans = false;
         while (processSize > getEmptyLocation()) {
             swap();
+            ans = true;
+        }
+        if(ans) {
+            System.out.println("          process " + process.getID() + " entered the memory");
+            System.out.println();
         }
         int startMemBound = end;
         int memBoundidx = allocatePCB(process);
@@ -175,6 +183,7 @@ public class Memory {
     private int allocatePCB(Process process) {
         memory[end] = process.getID();
         incrementEnd();
+        memory[end] = process.getMemoryBoundry()==null?new MemoryBoundry():process.getMemoryBoundry();
         int endMemBound = end;
         incrementEnd();
         memory[end] = process.getState();
@@ -185,7 +194,7 @@ public class Memory {
     }
 
     private void swap() throws OSSimulatoeException {
-        print();
+        System.out.println("starting swap:           ");
         nProcesses--;
         int startidx = getReadyOrBlockecdProcess();
         if (startidx == -1) {
@@ -196,25 +205,22 @@ public class Memory {
         startidx = setPCB(startidx, process);
         startidx = setUnparsedLine(startidx, process);
         setVariable(startidx, process);
+        System.out.println("          process "+process.getID()+" kicked out");
         Serializer.serializeProcess(process);
         setProcessesToNull(tmpPointer, process.getsize());
         removeFragmantetion();
-        resetMemoryBoundry();
     }
 
     private void resetMemoryBoundry() {
         int tmpPointer = start;
         int nProcess = nProcesses;
         while (nProcess-- > 0){
-            int processSize = ((MemoryBoundry) memory[nextPointer(tmpPointer)]).getsize();
-            MemoryBoundry boundry = (MemoryBoundry) memory[nextPointer(tmpPointer)];
-            boundry.setStart(tmpPointer);
-            memory[nextPointer(tmpPointer)] = boundry;
+            int starMemIdx = tmpPointer;
             int tmp = tmpPointer;
             tmp = skipPCB(tmp);
             tmp = skipUnparsedLines(tmp);
             tmp = skipVariables(tmp);
-            ((MemoryBoundry) memory[nextPointer(tmpPointer)]).setEnd(prevPointer(tmp));
+            memory[nextPointer(starMemIdx)] = new MemoryBoundry(starMemIdx, prevPointer(tmp));
             tmpPointer = getNextProcess(tmpPointer);
         }
     }
@@ -233,6 +239,7 @@ public class Memory {
         }
         memory = tmp;
         restructMemory();
+        resetMemoryBoundry();
     }
 
     private void restructMemory() {
@@ -426,7 +433,6 @@ public class Memory {
             setProcessesToNull(tmpPointer, process.getsize());
             nProcesses--;
             removeFragmantetion();
-            resetMemoryBoundry();
             startidx = getFinishProcess();
         }
     }
@@ -463,7 +469,20 @@ public class Memory {
         nProcesses = 0;
     }
 
-    public void print(){
-        System.out.println(Arrays.toString(memory));
+    public void print() throws NoSuchProcessException {
+        int nprocess = nProcesses;
+        int tmpPointer = start;
+        System.out.println("Memory:   ");
+        if(nprocess-- > 0 && memory[tmpPointer] != null){
+            Process process = getProcess((int)memory[tmpPointer]);
+            System.out.println("          "+process);
+        }
+        System.out.println();
+        while (nprocess-- > 0) {
+            tmpPointer = getNextProcess(tmpPointer);
+            Process process = getProcess((int)memory[tmpPointer]);
+            System.out.println("          "+process);
+            System.out.println();
+        }
     }
 }

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
+
+import exceptions.NoSuchProcessException;
 import exceptions.OSSimulatoeException;
 import interpreter.Interpreter;
 import memory.Memory;
@@ -40,7 +42,9 @@ public class Scheduler {
 		this.arrivingProcesses.add(process);
 	}
 
-	public void addToReadyQueue(Process process) {
+	public void addToReadyQueue(Process process) throws NoSuchProcessException {
+		process.setState(State.READY);
+		Memory.getInstance().updateProcess(process);
 		this.readyQueue.add(process);
 	}
 
@@ -72,7 +76,7 @@ public class Scheduler {
 		this.clockCycles++;
 	}
 
-	public void updateReadyQueue() {
+	public void updateReadyQueue() throws NoSuchProcessException {
 		for (int i=0; i<arrivingProcesses.size(); i++) {
 			Process p = arrivingProcesses.get(i);
 			if (p.isArrived(this.clockCycles)) {
@@ -85,26 +89,28 @@ public class Scheduler {
 	public void run(Process process) throws IOException, OSSimulatoeException {
 		int remTime = timeSlice;
 		process.setState(State.READY);
+		System.out.println("now Running Process: " + process.getID() +'\n'+process);
 		while (remTime-- > 0 && !process.getState().equals(State.BLOCKED) && !process.getState().equals(State.FINISH)) {
+			System.out.println("remaining time slice : "+remTime);
+			System.out.println("current clock cycle: "+ clockCycles);
 			process = Interpreter.executeInstruction(process);
-
-			if (process.getPcb().getState().equals(State.BLOCKED)
-					|| process.getPcb().getState().equals(State.FINISH)) {
-				// TODO: what if the process is only BLOCKED?
-				Memory.getInstance().removeFinish();
-			}
-
 			updateClockCycles();
+
 			updateReadyQueue();
-			System.out.println("---------_______________________________________________-------");
+			Memory.getInstance().print();
 		}
-
-		System.out.println("Process State in Scheduler run: " + process.getState());
-
 		if (!process.getPcb().getState().equals(State.BLOCKED)
 				&& !process.getPcb().getState().equals(State.FINISH)) {
 			this.addToReadyQueue(process);
+		} else{
+			System.out.println("event happen: "+process.getState());
+			System.out.println("     Ready Queue:          \n          "+this.readyQueue);
+			System.out.println("     Block Queue:          \n          "+this.blockedQueue);
+			Memory.getInstance().removeFinish();
 		}
+		System.out.println("Finish running \n ----------------------------------------------------------");
+		System.out.println();
+
 	}
 
 	public void controlProcesses() throws OSSimulatoeException, IOException {
@@ -113,6 +119,10 @@ public class Scheduler {
 			updateReadyQueue();
 			while (!readyQueue.isEmpty()) {
 				Process processToRun = this.getNextProcess();
+				System.out.println("event happen:  chosen   \n");
+				System.out.println("     Ready Queue:          \n"+this.readyQueue);
+				System.out.println("     Block Queue:          \n"+this.blockedQueue);
+				System.out.println();
 				this.run(processToRun);
 			}
 
