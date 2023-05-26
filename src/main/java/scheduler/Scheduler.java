@@ -90,6 +90,7 @@ public class Scheduler {
 			Process p = arrivingProcesses.get(i);
 			if (p.isArrived(this.clockCycles)) {
 				arrivingProcesses.remove(p);
+				i--;
 				this.addToReadyQueue(p);
 			}
 		}
