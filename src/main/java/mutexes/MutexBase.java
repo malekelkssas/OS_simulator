@@ -37,6 +37,7 @@ public abstract class MutexBase implements Mutexable {
 		else {
 			Process p = blockedQueue.remove();
 			p.setState(State.READY);
+			Scheduler.getInstance().removeFromBlockedQueue(p);
 			readyQueue.add(p);
 			Scheduler.getInstance().addToReadyQueue(p);
 			ownerID = p.getID();
