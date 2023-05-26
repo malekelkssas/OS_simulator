@@ -24,14 +24,14 @@ public class CodeParser {
 	}
 
 	public static void main(String[] args) throws IOException, OSSimulatoeException {
-		Process p1 = Interpreter.getProcessReady(readFile("Program_1.txt"));
-		Process p2 = Interpreter.getProcessReady(readFile("Program_2.txt"));
-		Process p3 = Interpreter.getProcessReady(readFile("Program_3.txt"));
-		Scheduler.getInstance().addToReadyQueue(p1);
-		Scheduler.getInstance().addToReadyQueue(p2);
-		Scheduler.getInstance().addToReadyQueue(p3);
+		Process p1 = Interpreter.getProcessReady(readFile("Program_1.txt"),0);
+		Process p2 = Interpreter.getProcessReady(readFile("Program_2.txt"), 1);
+		Process p3 = Interpreter.getProcessReady(readFile("Program_3.txt"), 4);
+		Scheduler.getInstance().addToArrivingProcesses(p1);
+		Scheduler.getInstance().addToArrivingProcesses(p2);
+		Scheduler.getInstance().addToArrivingProcesses(p3);
 		Scheduler.getInstance().setTimeSlice(2);
-		Scheduler.getInstance().run();
+		Scheduler.getInstance().controlProcesses();
 	}
 
 }

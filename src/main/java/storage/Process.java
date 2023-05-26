@@ -11,10 +11,13 @@ public class Process implements Serializable {
 	private Vector<UnParsedLine> unParsedLines;
 	private Vector<Variable> variables;
 
-	public Process(int id, Vector<UnParsedLine> unParsedLines, Vector<Variable> variables) {
+	private int arrivalTime;
+
+	public Process(int id, Vector<UnParsedLine> unParsedLines, Vector<Variable> variables, int arrivalTime) {
 		this.pcb = new PCB(id);
 		this.unParsedLines = (Vector<UnParsedLine>) unParsedLines.clone();
 		this.variables = (Vector<Variable>) variables.clone();
+		this.arrivalTime = arrivalTime;
 	}
 
 	public Process(PCB pcb, Vector<UnParsedLine> unParsedLines, Vector<Variable> variables) {
@@ -74,6 +77,18 @@ public class Process implements Serializable {
 
 	public void setVariables(Vector<Variable> variables) {
 		this.variables = (Vector<Variable>) variables.clone();
+	}
+
+	public int getArrivalTime() {
+		return this.arrivalTime;
+	}
+
+	public void setArrivalTime(int arrivalTime) {
+		this.arrivalTime = arrivalTime;
+	}
+
+	public boolean isArrived(int currentTime) {
+		return this.arrivalTime == currentTime;
 	}
 
 	public void inccrPC() {

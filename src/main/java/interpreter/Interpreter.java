@@ -148,7 +148,7 @@ public class Interpreter {
 		return memory;
 	}
 
-	public static Process getProcessReady(ArrayList<String> lines) throws OSSimulatoeException {
+	public static Process getProcessReady(ArrayList<String> lines, int arrivalTime) throws OSSimulatoeException {
 		Vector<UnParsedLine> unParsedLines = new Vector<UnParsedLine>();
 		Vector<Variable> variblesToAdd = new Vector<Variable>();
 		HashSet<String> varibles = new HashSet<String>();
@@ -159,7 +159,7 @@ public class Interpreter {
 		for (String var : varibles) {
 			variblesToAdd.add(new Variable(var, null));
 		}
-		Process process = new Process(++processid, unParsedLines, variblesToAdd);
+		Process process = new Process(++processid, unParsedLines, variblesToAdd, arrivalTime);
 		WriteMemory.writeProcess(process);
 		return process;
 	}
