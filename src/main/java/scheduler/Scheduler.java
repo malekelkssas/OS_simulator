@@ -38,6 +38,15 @@ public class Scheduler {
 		return this.readyQueue;
 	}
 
+	public void removeFromBlockedQueue(Process p) {
+		int size = blockedQueue.size();
+		while (size-- > 0) {
+			Process tmp = blockedQueue.remove();
+			if (tmp.getID() != p.getID())
+				blockedQueue.add(tmp);
+		}
+	}
+
 	public void addToArrivingProcesses(Process process) {
 		this.arrivingProcesses.add(process);
 	}
@@ -77,10 +86,11 @@ public class Scheduler {
 	}
 
 	public void updateReadyQueue() throws NoSuchProcessException {
-		for (int i=0; i<arrivingProcesses.size(); i++) {
+		for (int i = 0; i < arrivingProcesses.size(); i++) {
 			Process p = arrivingProcesses.get(i);
 			if (p.isArrived(this.clockCycles)) {
 				arrivingProcesses.remove(p);
+				i--;
 				this.addToReadyQueue(p);
 			}
 		}
@@ -89,22 +99,21 @@ public class Scheduler {
 	public void run(Process process) throws IOException, OSSimulatoeException {
 		int remTime = timeSlice;
 		process.setState(State.READY);
-		System.out.println("now Running Process: " + process.getID() +'\n'+process);
+		System.out.println("now Running Process: " + process.getID() + '\n' + process);
 		while (remTime-- > 0 && !process.getState().equals(State.BLOCKED) && !process.getState().equals(State.FINISH)) {
-			System.out.println("remaining time slice : "+remTime);
-			System.out.println("current clock cycle: "+ clockCycles);
+			System.out.println("remaining time slice : " + remTime);
+			System.out.println("current clock cycle: " + clockCycles);
 			process = Interpreter.executeInstruction(process);
 			updateClockCycles();
 			updateReadyQueue();
 			Memory.getInstance().print();
 		}
-		if (!process.getPcb().getState().equals(State.BLOCKED)
-				&& !process.getPcb().getState().equals(State.FINISH)) {
+		if (!process.getPcb().getState().equals(State.BLOCKED) && !process.getPcb().getState().equals(State.FINISH)) {
 			this.addToReadyQueue(process);
 		} else {
-			System.out.println("event happen: "+process.getState());
-			System.out.println("     Ready Queue:          \n          "+this.readyQueue);
-			System.out.println("     Block Queue:          \n          "+this.blockedQueue);
+			System.out.println("event happen: " + process.getState());
+			System.out.println("     Ready Queue:          \n          " + this.readyQueue);
+			System.out.println("     Block Queue:          \n          " + this.blockedQueue);
 			Memory.getInstance().removeFinish();
 		}
 		System.out.println("Finish running \n ----------------------------------------------------------");
@@ -119,8 +128,8 @@ public class Scheduler {
 			while (!readyQueue.isEmpty()) {
 				Process processToRun = this.getNextProcess();
 				System.out.println("event happen:  chosen   \n");
-				System.out.println("     Ready Queue:          \n"+this.readyQueue);
-				System.out.println("     Block Queue:          \n"+this.blockedQueue);
+				System.out.println("     Ready Queue:          \n" + this.readyQueue);
+				System.out.println("     Block Queue:          \n" + this.blockedQueue);
 				System.out.println();
 				this.run(processToRun);
 			}
