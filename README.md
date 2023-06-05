@@ -46,6 +46,9 @@ a Java-based simulation of a simple operating system
   mvn exec:java
 ```
 
+## Notes
+
+There are three programs files in this project that are being executed. Go and check them out, and you can edit them as you want.
 
 ## Related
 
